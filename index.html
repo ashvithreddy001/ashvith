@@ -1,163 +1,260 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="theme-color" content="#6c63ff" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="JobMailer" />
-  <meta name="mobile-web-app-capable" content="yes" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover"/>
+  <meta name="theme-color" content="#0d0d14"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <meta name="apple-mobile-web-app-title" content="JobMailer"/>
+  <meta name="mobile-web-app-capable" content="yes"/>
   <title>JobMatch Mailer</title>
-  <link rel="manifest" href="manifest.json" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="manifest" href="manifest.json"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
   <style>
-    :root {
-      --bg:#0a0a0f;--card:#1a1a28;--card2:#13131e;--border:rgba(255,255,255,0.08);
-      --accent:#6c63ff;--green:#43e97b;--text:#f0eeff;--muted:rgba(240,238,255,0.4);
+    :root{
+      --bg:#0d0d14;--bg2:#12121e;--card:#16161f;--card2:#1c1c2a;
+      --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.12);
+      --accent:#7c6aff;--accent2:#ff6b9d;--green:#00e5a0;--amber:#ffb347;
+      --text:#eeeaff;--muted:rgba(238,234,255,0.42);--faint:rgba(238,234,255,0.18);
       --safe-top:env(safe-area-inset-top,0px);--safe-bottom:env(safe-area-inset-bottom,0px);
+      --r:16px;
     }
     *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-    html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;overflow:hidden}
+    html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;overflow:hidden;-webkit-font-smoothing:antialiased}
     #app{display:flex;flex-direction:column;height:100dvh;padding-top:var(--safe-top)}
-    .topbar{display:flex;align-items:center;justify-content:space-between;padding:13px 18px 10px;border-bottom:1px solid var(--border);background:var(--bg);flex-shrink:0;z-index:10}
-    .topbar-logo{display:flex;align-items:center;gap:8px;font-size:1rem;font-weight:800;letter-spacing:-0.03em}
-    .logo-icon{width:30px;height:30px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px}
-    .topbar-badge{font-size:.62rem;background:rgba(108,99,255,.18);border:1px solid rgba(108,99,255,.35);color:#a99dff;padding:3px 8px;border-radius:20px;letter-spacing:.07em}
-    .stepbar{display:flex;align-items:center;padding:9px 18px;gap:5px;flex-shrink:0}
-    .step-dot{display:flex;align-items:center;gap:5px;font-size:.68rem;font-weight:600;letter-spacing:.05em;color:var(--muted);transition:color .3s}
-    .step-dot.active{color:var(--text)}.step-dot.done{color:var(--green)}
-    .step-num{width:19px;height:19px;border-radius:50%;border:1.5px solid currentColor;display:flex;align-items:center;justify-content:center;font-size:.6rem;font-family:'DM Mono',monospace;transition:all .3s}
-    .step-dot.active .step-num{background:var(--accent);border-color:var(--accent);color:white}
-    .step-dot.done .step-num{background:var(--green);border-color:var(--green);color:var(--bg)}
-    .step-line{flex:1;height:1.5px;background:var(--border);border-radius:2px;overflow:hidden}
-    .step-line-fill{height:100%;background:var(--green);width:0%;transition:width .5s ease}
-    #install-banner{display:none;margin:0 14px 8px;background:rgba(108,99,255,.12);border:1px solid rgba(108,99,255,.25);border-radius:12px;padding:10px 13px;align-items:center;gap:10px}
-    #install-banner.show{display:flex}
-    #install-banner p{flex:1;font-size:.75rem}
-    #install-banner p small{display:block;color:var(--muted);font-size:.65rem;margin-top:1px}
-    #install-btn{background:var(--accent);border:none;border-radius:7px;color:white;font-family:'Syne',sans-serif;font-size:.75rem;font-weight:700;padding:7px 13px;cursor:pointer;white-space:nowrap}
-    .content{flex:1;overflow-y:auto;padding:14px 14px 110px;-webkit-overflow-scrolling:touch}
-    .card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:10px}
-    .card-label{font-size:.65rem;letter-spacing:.12em;color:var(--muted);text-transform:uppercase;margin-bottom:9px;display:flex;align-items:center;gap:5px}
-    textarea{width:100%;background:rgba(0,0,0,.35);border:1px solid var(--border);border-radius:9px;color:var(--text);font-family:'DM Mono',monospace;font-size:.8rem;line-height:1.65;padding:11px;resize:none;transition:border-color .2s;outline:none}
+
+    /* NAV */
+    .nav{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--border);flex-shrink:0;background:var(--bg);z-index:30}
+    .nav-brand{display:flex;align-items:center;gap:9px}
+    .nav-icon{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--accent),#b06aff);display:flex;align-items:center;justify-content:center;font-size:16px;box-shadow:0 4px 12px rgba(124,106,255,.35)}
+    .nav-title{font-size:1rem;font-weight:700;letter-spacing:-.02em}
+    .nav-right{display:flex;align-items:center;gap:8px}
+    .nav-btn{width:34px;height:34px;border-radius:9px;border:1px solid var(--border2);background:var(--card2);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;transition:all .15s}
+    .nav-btn:active{background:rgba(124,106,255,.2)}
+
+    /* STEPS */
+    .steps{display:flex;align-items:center;padding:10px 16px 8px;gap:4px;flex-shrink:0}
+    .step{display:flex;align-items:center;gap:5px;font-size:.67rem;font-weight:600;letter-spacing:.04em;color:var(--faint);transition:color .3s;white-space:nowrap}
+    .step.active{color:var(--text)}.step.done{color:var(--green)}
+    .step-n{width:18px;height:18px;border-radius:50%;border:1.5px solid currentColor;display:flex;align-items:center;justify-content:center;font-size:.58rem;font-family:'JetBrains Mono',monospace;transition:all .3s;flex-shrink:0}
+    .step.active .step-n{background:var(--accent);border-color:var(--accent);color:#fff}
+    .step.done .step-n{background:var(--green);border-color:var(--green);color:var(--bg)}
+    .step-line{flex:1;height:1px;background:var(--border);overflow:hidden}
+    .step-line-f{height:100%;background:var(--green);width:0%;transition:width .5s ease}
+
+    /* INSTALL BANNER */
+    #ibanner{display:none;margin:0 14px 8px;background:linear-gradient(135deg,rgba(124,106,255,.12),rgba(176,106,255,.08));border:1px solid rgba(124,106,255,.25);border-radius:12px;padding:10px 13px;align-items:center;gap:10px}
+    #ibanner.show{display:flex}
+    #ibanner p{flex:1;font-size:.75rem;line-height:1.4}
+    #ibanner p small{color:var(--muted);font-size:.65rem}
+    #ibtn{background:var(--accent);border:none;border-radius:8px;color:#fff;font-family:'Outfit',sans-serif;font-size:.75rem;font-weight:700;padding:7px 13px;cursor:pointer;white-space:nowrap}
+
+    /* SCROLL */
+    .scroll{flex:1;overflow-y:auto;padding:14px 14px 120px;-webkit-overflow-scrolling:touch}
+
+    /* CARDS */
+    .card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:10px}
+    .clabel{font-size:.62rem;letter-spacing:.12em;color:var(--muted);text-transform:uppercase;margin-bottom:9px;display:flex;align-items:center;gap:5px}
+    textarea{width:100%;background:rgba(0,0,0,.3);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:.78rem;line-height:1.7;padding:11px;resize:none;transition:border-color .2s;outline:none}
     textarea:focus{border-color:var(--accent)}
-    textarea::placeholder{color:rgba(255,255,255,.18);font-family:'Syne',sans-serif;font-size:.8rem}
-    .char-count{font-size:.65rem;color:var(--muted);font-family:'DM Mono',monospace;text-align:right;margin-top:5px}
-    .example-btn{font-size:.68rem;background:rgba(108,99,255,.1);border:1px solid rgba(108,99,255,.22);color:#a99dff;padding:3px 9px;border-radius:6px;cursor:pointer;font-family:'Syne',sans-serif;margin-left:auto;display:block;margin-bottom:7px}
-    .bottom-bar{position:fixed;bottom:0;left:0;right:0;background:linear-gradient(to top,var(--bg) 65%,transparent);padding:14px 14px calc(14px + var(--safe-bottom));z-index:20}
-    .btn-main{width:100%;background:linear-gradient(135deg,var(--accent),#9c6bff);border:none;border-radius:13px;color:white;font-family:'Syne',sans-serif;font-size:.95rem;font-weight:700;letter-spacing:.03em;padding:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 8px 28px rgba(108,99,255,.32);transition:all .2s;-webkit-appearance:none}
-    .btn-main:active{transform:scale(.97)}.btn-main:disabled{opacity:.38;box-shadow:none;cursor:not-allowed}
-    .spinner{width:16px;height:16px;border:2px solid rgba(255,255,255,.28);border-top-color:white;border-radius:50%;animation:spin .7s linear infinite}
-    @keyframes spin{to{transform:rotate(360deg)}}
-    @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
-    .result-screen{animation:fadeUp .4s ease}
-    .match-bar{display:flex;align-items:center;gap:13px;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:13px 15px;margin-bottom:10px}
-    .score-ring{position:relative;width:50px;height:50px;flex-shrink:0}
-    .score-ring svg{transform:rotate(-90deg)}
-    .score-label{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:.74rem;font-weight:500}
-    .match-text strong{display:block;font-size:.8rem;font-weight:700;margin-bottom:2px}
-    .match-text p{font-size:.72rem;color:var(--muted);line-height:1.45}
-    .email-field{margin-bottom:10px}
-    .field-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px}
-    .field-name{font-size:.63rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
-    .copy-btn{font-size:.67rem;background:rgba(255,255,255,.05);border:1px solid var(--border);color:var(--text);padding:3px 9px;border-radius:6px;cursor:pointer;font-family:'Syne',sans-serif;transition:all .15s}
-    .copy-btn:active{background:rgba(108,99,255,.22)}.copy-btn.copied{color:var(--green);border-color:var(--green)}
-    .field-val{background:rgba(0,0,0,.3);border:1px solid var(--border);border-radius:9px;padding:10px 12px;font-size:.82rem;line-height:1.6;font-family:'DM Mono',monospace;word-break:break-all;color:var(--text)}
-    .field-val.to{color:var(--green)}
-    .field-val.body{white-space:pre-wrap;font-size:.78rem;max-height:180px;overflow-y:auto;word-break:normal}
-    .action-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
-    .btn-action{background:var(--card);border:1px solid var(--border);border-radius:11px;color:var(--text);font-family:'Syne',sans-serif;font-size:.8rem;font-weight:600;padding:12px 8px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:all .15s}
-    .btn-action:active{background:rgba(255,255,255,.08)}
-    .btn-action.hi{background:linear-gradient(135deg,var(--accent),#9c6bff);border-color:transparent;box-shadow:0 4px 14px rgba(108,99,255,.28)}
-    .tweak-section{margin-top:16px}
-    .tweak-header{display:flex;align-items:center;gap:8px;font-size:.7rem;font-weight:700;letter-spacing:.08em;color:#a99dff;text-transform:uppercase;margin-bottom:10px}
-    .tweak-header::after{content:'';flex:1;height:1px;background:rgba(108,99,255,.2)}
+    textarea::placeholder{color:var(--faint);font-family:'Outfit',sans-serif;font-size:.78rem}
+    .ccount{font-size:.63rem;color:var(--faint);font-family:'JetBrains Mono',monospace;text-align:right;margin-top:5px}
+    .ex-btn{font-size:.67rem;background:rgba(124,106,255,.1);border:1px solid rgba(124,106,255,.2);color:#b8aaff;padding:3px 9px;border-radius:6px;cursor:pointer;font-family:'Outfit',sans-serif;margin-left:auto;display:block;margin-bottom:7px}
+    .ex-btn:active{background:rgba(124,106,255,.25)}
+
+    /* BOTTOM BAR */
+    .bbar{position:fixed;bottom:0;left:0;right:0;background:linear-gradient(to top,var(--bg) 60%,transparent);padding:14px 14px calc(14px + var(--safe-bottom));z-index:20}
+    .bmain{width:100%;background:linear-gradient(135deg,var(--accent),#b06aff);border:none;border-radius:13px;color:#fff;font-family:'Outfit',sans-serif;font-size:.95rem;font-weight:700;letter-spacing:.02em;padding:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 8px 28px rgba(124,106,255,.35);transition:all .2s;-webkit-appearance:none}
+    .bmain:active{transform:scale(.97)}.bmain:disabled{opacity:.35;box-shadow:none;cursor:not-allowed}
+
+    /* SPINNER / ANIMATIONS */
+    .spin{width:16px;height:16px;border:2px solid rgba(255,255,255,.25);border-top-color:#fff;border-radius:50%;animation:spinning .7s linear infinite;flex-shrink:0}
+    @keyframes spinning{to{transform:rotate(360deg)}}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+    .result-wrap{animation:fadeUp .4s ease}
+
+    /* RESULT */
+    .match-card{display:flex;align-items:center;gap:13px;background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:13px 15px;margin-bottom:10px}
+    .sring{position:relative;width:50px;height:50px;flex-shrink:0}
+    .sring svg{transform:rotate(-90deg)}
+    .slabel{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:500}
+    .mtext strong{display:block;font-size:.8rem;font-weight:700;margin-bottom:2px}
+    .mtext p{font-size:.7rem;color:var(--muted);line-height:1.45}
+    .efield{margin-bottom:10px}
+    .etop{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px}
+    .ename{font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+    .cbtn{font-size:.65rem;background:rgba(255,255,255,.05);border:1px solid var(--border2);color:var(--text);padding:3px 9px;border-radius:6px;cursor:pointer;font-family:'Outfit',sans-serif;transition:all .15s}
+    .cbtn:active{background:rgba(124,106,255,.2)}.cbtn.ok{color:var(--green);border-color:var(--green)}
+    .fval{background:rgba(0,0,0,.28);border:1px solid var(--border);border-radius:9px;padding:10px 12px;font-size:.8rem;line-height:1.6;font-family:'JetBrains Mono',monospace;word-break:break-all;color:var(--text);transition:border-color .4s,box-shadow .4s}
+    .fval.to{color:var(--green)}
+    .fval.body{white-space:pre-wrap;font-size:.76rem;max-height:180px;overflow-y:auto;word-break:normal}
+    .arow{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+    .abtn{background:var(--card2);border:1px solid var(--border2);border-radius:11px;color:var(--text);font-family:'Outfit',sans-serif;font-size:.78rem;font-weight:600;padding:12px 8px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:all .15s}
+    .abtn:active{background:rgba(255,255,255,.08)}
+    .abtn.hi{background:linear-gradient(135deg,var(--accent),#b06aff);border-color:transparent;box-shadow:0 4px 14px rgba(124,106,255,.3)}
+
+    /* TWEAK */
+    .tweak-sec{margin-top:16px}
+    .tweak-hdr{display:flex;align-items:center;gap:8px;font-size:.68rem;font-weight:700;letter-spacing:.08em;color:#b8aaff;text-transform:uppercase;margin-bottom:10px}
+    .tweak-hdr::after{content:'';flex:1;height:1px;background:rgba(124,106,255,.18)}
     .chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
-    .chip{background:rgba(108,99,255,.1);border:1px solid rgba(108,99,255,.2);color:#c4bcff;border-radius:20px;padding:5px 11px;font-size:.72rem;cursor:pointer;font-family:'Syne',sans-serif;transition:all .15s;white-space:nowrap}
-    .chip:active{background:rgba(108,99,255,.3);border-color:rgba(108,99,255,.5)}
-    .chat-log{display:flex;flex-direction:column;gap:8px;margin-bottom:10px}
-    .chat-msg{border-radius:11px;padding:9px 12px;font-size:.77rem;line-height:1.5;max-width:90%;animation:fadeUp .25s ease}
-    .chat-msg.user{background:rgba(108,99,255,.18);border:1px solid rgba(108,99,255,.25);color:var(--text);align-self:flex-end}
-    .chat-msg.ai{background:var(--card2);border:1px solid var(--border);color:var(--muted);align-self:flex-start}
-    .chat-msg.ai.thinking{opacity:.6;font-style:italic}
-    .tweak-input-row{display:flex;gap:8px;align-items:flex-end}
-    .tweak-input{flex:1;background:rgba(0,0,0,.35);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:'Syne',sans-serif;font-size:.82rem;padding:10px 12px;outline:none;transition:border-color .2s;resize:none;line-height:1.4}
-    .tweak-input:focus{border-color:var(--accent)}
-    .tweak-input::placeholder{color:rgba(255,255,255,.2)}
-    .tweak-send{width:40px;height:40px;flex-shrink:0;background:var(--accent);border:none;border-radius:10px;color:white;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all .15s}
-    .tweak-send:active{transform:scale(.92)}.tweak-send:disabled{opacity:.35;cursor:not-allowed}
-    .reset-link{text-align:center;padding:14px 10px 4px;color:var(--muted);font-size:.75rem;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
-    .error-msg{background:rgba(255,101,132,.08);border:1px solid rgba(255,101,132,.25);border-radius:9px;padding:11px;font-size:.8rem;color:#ff9ab0;text-align:center;margin-top:8px}
-    @keyframes flashBorder{0%{border-color:var(--green);box-shadow:0 0 0 2px rgba(67,233,123,.2)}100%{border-color:var(--border);box-shadow:none}}
-    .flash{animation:flashBorder 1.2s ease forwards}
+    .chip{background:rgba(124,106,255,.09);border:1px solid rgba(124,106,255,.18);color:#c8bdff;border-radius:20px;padding:5px 11px;font-size:.7rem;cursor:pointer;font-family:'Outfit',sans-serif;transition:all .15s;white-space:nowrap}
+    .chip:active{background:rgba(124,106,255,.28);border-color:rgba(124,106,255,.5)}
+    .chatlog{display:flex;flex-direction:column;gap:7px;margin-bottom:10px}
+    .cmsg{border-radius:11px;padding:8px 12px;font-size:.75rem;line-height:1.5;max-width:90%;animation:fadeUp .2s ease}
+    .cmsg.u{background:rgba(124,106,255,.16);border:1px solid rgba(124,106,255,.22);color:var(--text);align-self:flex-end}
+    .cmsg.a{background:var(--card2);border:1px solid var(--border);color:var(--muted);align-self:flex-start}
+    .cmsg.a.thinking{opacity:.55;font-style:italic}
+    .tinrow{display:flex;gap:8px;align-items:flex-end}
+    .tin{flex:1;background:rgba(0,0,0,.3);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:'Outfit',sans-serif;font-size:.82rem;padding:10px 12px;outline:none;transition:border-color .2s;resize:none;line-height:1.4}
+    .tin:focus{border-color:var(--accent)}
+    .tin::placeholder{color:var(--faint)}
+    .tsend{width:40px;height:40px;flex-shrink:0;background:var(--accent);border:none;border-radius:10px;color:#fff;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all .15s;box-shadow:0 3px 10px rgba(124,106,255,.3)}
+    .tsend:active{transform:scale(.9)}.tsend:disabled{opacity:.32;cursor:not-allowed;box-shadow:none}
+    .rlink{text-align:center;padding:14px 10px 4px;color:var(--muted);font-size:.73rem;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+    .errmsg{background:rgba(255,107,157,.07);border:1px solid rgba(255,107,157,.22);border-radius:9px;padding:11px;font-size:.78rem;color:#ffa0bc;text-align:center;margin-top:8px}
+    @keyframes flash{0%{border-color:var(--green);box-shadow:0 0 0 3px rgba(0,229,160,.15)}100%{border-color:var(--border);box-shadow:none}}
+    .flash{animation:flash 1.4s ease forwards}
+
+    /* NO KEY BANNER */
+    .nokey-banner{background:linear-gradient(135deg,rgba(255,107,157,.08),rgba(255,179,71,.06));border:1px solid rgba(255,107,157,.22);border-radius:12px;padding:13px 15px;margin-bottom:10px;display:flex;align-items:center;gap:12px;cursor:pointer;animation:fadeUp .3s ease}
+    .nokey-icon{font-size:22px;flex-shrink:0}
+    .nokey-text p{font-size:.78rem;line-height:1.45}
+    .nokey-text strong{display:block;font-size:.82rem;margin-bottom:2px}
+    .nokey-text span{color:var(--muted);font-size:.72rem}
+    .nokey-arrow{color:var(--muted);flex-shrink:0;font-size:18px;margin-left:auto}
+
+    /* SETTINGS PANEL */
+    .panel{position:fixed;inset:0;z-index:100;display:flex;flex-direction:column;background:var(--bg);transform:translateX(100%);transition:transform .3s cubic-bezier(.4,0,.2,1)}
+    .panel.open{transform:translateX(0)}
+    .panel-head{display:flex;align-items:center;justify-content:space-between;padding:calc(14px + var(--safe-top)) 16px 14px;border-bottom:1px solid var(--border);flex-shrink:0}
+    .panel-title{font-size:1rem;font-weight:700;letter-spacing:-.02em}
+    .panel-close{width:32px;height:32px;border-radius:8px;border:1px solid var(--border2);background:var(--card2);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;color:var(--muted)}
+    .panel-body{flex:1;overflow-y:auto;padding:20px 16px calc(40px + var(--safe-bottom))}
+    .scard{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:14px}
+    .scard-title{font-size:.8rem;font-weight:700;margin-bottom:4px}
+    .scard-desc{font-size:.72rem;color:var(--muted);line-height:1.5;margin-bottom:12px}
+    .scard-desc a{color:#b8aaff;text-decoration:none}
+    .provider-tabs{display:flex;gap:6px;margin-bottom:14px}
+    .ptab{flex:1;background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:9px 4px;font-size:.72rem;font-weight:600;text-align:center;cursor:pointer;transition:all .15s;color:var(--muted);line-height:1.4}
+    .ptab.active{background:rgba(124,106,255,.18);border-color:rgba(124,106,255,.4);color:var(--text)}
+    .sinput-wrap{position:relative}
+    .sinput{width:100%;background:rgba(0,0,0,.35);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:.78rem;padding:11px 44px 11px 12px;outline:none;transition:border-color .2s}
+    .sinput:focus{border-color:var(--accent)}
+    .sinput::placeholder{color:var(--faint);font-family:'Outfit',sans-serif;letter-spacing:0}
+    .eye-btn{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;padding:4px}
+    .key-status{display:flex;align-items:center;gap:7px;margin-top:8px;font-size:.72rem}
+    .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;background:var(--faint)}
+    .dot.ok{background:var(--green);box-shadow:0 0 6px rgba(0,229,160,.4)}
+    .dot.err{background:var(--accent2)}
+    .ssave{width:100%;background:linear-gradient(135deg,var(--accent),#b06aff);border:none;border-radius:11px;color:#fff;font-family:'Outfit',sans-serif;font-size:.9rem;font-weight:700;padding:13px;cursor:pointer;margin-top:12px;box-shadow:0 6px 20px rgba(124,106,255,.3);transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px}
+    .ssave:active{transform:scale(.97)}.ssave:disabled{opacity:.35;cursor:not-allowed;box-shadow:none}
+    .sclear{width:100%;background:transparent;border:1px solid rgba(255,107,157,.25);border-radius:11px;color:#ffb0c8;font-family:'Outfit',sans-serif;font-size:.82rem;font-weight:600;padding:11px;cursor:pointer;margin-top:8px;transition:all .15s}
+    .sclear:active{background:rgba(255,107,157,.08)}
+    .how-steps{display:flex;flex-direction:column;gap:9px;margin-top:4px}
+    .how-step{display:flex;gap:10px;align-items:flex-start}
+    .how-num{width:21px;height:21px;border-radius:50%;background:rgba(124,106,255,.15);border:1px solid rgba(124,106,255,.3);color:#b8aaff;font-size:.62rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+    .how-text{font-size:.73rem;color:var(--muted);line-height:1.5}
+    .how-text strong{color:var(--text)}
+    .how-text a{color:#b8aaff;text-decoration:none}
+    .divider{height:1px;background:var(--border);margin:16px 0}
+    .privacy-note{font-size:.7rem;color:var(--muted);line-height:1.6;text-align:center;padding:0 8px}
   </style>
 </head>
 <body>
 <div id="app">
-  <div class="topbar">
-    <div class="topbar-logo"><div class="logo-icon">✉</div>JobMatch Mailer</div>
-    <div class="topbar-badge">AI POWERED</div>
+
+  <!-- NAV -->
+  <div class="nav">
+    <div class="nav-brand">
+      <div class="nav-icon">✉</div>
+      <span class="nav-title">JobMatch Mailer</span>
+    </div>
+    <div class="nav-right">
+      <div class="nav-btn" id="key-ind" onclick="openSettings()" title="Settings">🔑</div>
+      <div class="nav-btn" onclick="openSettings()">⚙️</div>
+    </div>
   </div>
-  <div id="install-banner">
+
+  <!-- INSTALL BANNER -->
+  <div id="ibanner">
     <p>Install as App <small>Works offline · No app store needed</small></p>
-    <button id="install-btn">Install</button>
+    <button id="ibtn">Install ↓</button>
   </div>
-  <div class="stepbar">
-    <div class="step-dot active" id="s1"><div class="step-num">1</div>Profile</div>
-    <div class="step-line"><div class="step-line-fill" id="line1"></div></div>
-    <div class="step-dot" id="s2"><div class="step-num">2</div>Job Post</div>
-    <div class="step-line"><div class="step-line-fill" id="line2"></div></div>
-    <div class="step-dot" id="s3"><div class="step-num">3</div>Send</div>
+
+  <!-- STEPS -->
+  <div class="steps">
+    <div class="step active" id="s1"><div class="step-n">1</div>Profile</div>
+    <div class="step-line"><div class="step-line-f" id="l1"></div></div>
+    <div class="step" id="s2"><div class="step-n">2</div>Job Post</div>
+    <div class="step-line"><div class="step-line-f" id="l2"></div></div>
+    <div class="step" id="s3"><div class="step-n">3</div>Send</div>
   </div>
-  <div class="content" id="content">
-    <!-- STEP 1 -->
-    <div id="view-input">
-      <div class="card">
-        <div class="card-label"><span>👤</span> Your Profile</div>
-        <button class="example-btn" onclick="loadExample('profile')">Load example</button>
-        <textarea id="profile" rows="7" placeholder="Paste your profile or resume summary…&#10;&#10;Include: name, title, skills, years of experience, your email address"></textarea>
-        <div class="char-count"><span id="pc">0</span> chars</div>
+
+  <!-- MAIN SCROLL -->
+  <div class="scroll" id="scroll">
+
+    <!-- INPUT VIEW -->
+    <div id="v-input">
+      <div class="nokey-banner" id="nokey-banner" onclick="openSettings()" style="display:none">
+        <div class="nokey-icon">🔐</div>
+        <div class="nokey-text">
+          <p><strong>API Key Required</strong><span>Tap to add your free Gemini or Claude key</span></p>
+        </div>
+        <div class="nokey-arrow">›</div>
       </div>
+
       <div class="card">
-        <div class="card-label"><span>📋</span> Job Posting</div>
-        <button class="example-btn" onclick="loadExample('job')">Load example</button>
-        <textarea id="jobpost" rows="8" placeholder="Paste the full job posting here…&#10;&#10;The AI will auto-detect the hiring email, company, and requirements."></textarea>
-        <div class="char-count"><span id="jc">0</span> chars</div>
+        <div class="clabel"><span>👤</span> Your Profile</div>
+        <button class="ex-btn" onclick="loadEx('profile')">Load example</button>
+        <textarea id="profile" rows="7" placeholder="Paste your profile or resume summary…&#10;&#10;Include: name, title, skills, years of experience, your email address"></textarea>
+        <div class="ccount"><span id="pc">0</span> chars</div>
+      </div>
+
+      <div class="card">
+        <div class="clabel"><span>📋</span> Job Posting</div>
+        <button class="ex-btn" onclick="loadEx('job')">Load example</button>
+        <textarea id="jobpost" rows="8" placeholder="Paste the full job posting here…&#10;&#10;AI will auto-detect the hiring email, company, and requirements."></textarea>
+        <div class="ccount"><span id="jc">0</span> chars</div>
       </div>
     </div>
-    <!-- STEP 2 -->
-    <div id="view-result" style="display:none" class="result-screen">
-      <div class="match-bar">
-        <div class="score-ring">
+
+    <!-- RESULT VIEW -->
+    <div id="v-result" style="display:none" class="result-wrap">
+      <div class="match-card">
+        <div class="sring">
           <svg width="50" height="50" viewBox="0 0 50 50">
-            <circle cx="25" cy="25" r="20" fill="none" stroke="rgba(255,255,255,.07)" stroke-width="4"/>
-            <circle cx="25" cy="25" r="20" fill="none" id="score-arc" stroke="#43e97b" stroke-width="4" stroke-linecap="round" stroke-dasharray="125.6" stroke-dashoffset="125.6" style="transition:stroke-dashoffset 1s ease,stroke .5s"/>
+            <circle cx="25" cy="25" r="20" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="4"/>
+            <circle cx="25" cy="25" r="20" fill="none" id="sarc" stroke="#00e5a0" stroke-width="4" stroke-linecap="round" stroke-dasharray="125.6" stroke-dashoffset="125.6" style="transition:stroke-dashoffset 1s ease,stroke .5s"/>
           </svg>
-          <div class="score-label" id="score-num">—</div>
+          <div class="slabel" id="snum">—</div>
         </div>
-        <div class="match-text"><strong>Profile Match</strong><p id="match-reason">Analyzing…</p></div>
+        <div class="mtext"><strong>Profile Match</strong><p id="mreason">Analyzing…</p></div>
       </div>
-      <div class="email-field">
-        <div class="field-top"><div class="field-name">To</div><button class="copy-btn" onclick="copyField('to-val',this)">Copy</button></div>
-        <div class="field-val to" id="to-val">—</div>
+
+      <div class="efield">
+        <div class="etop"><div class="ename">To</div><button class="cbtn" onclick="cpf('fto',this)">Copy</button></div>
+        <div class="fval to" id="fto">—</div>
       </div>
-      <div class="email-field">
-        <div class="field-top"><div class="field-name">Subject</div><button class="copy-btn" onclick="copyField('subj-val',this)">Copy</button></div>
-        <div class="field-val" id="subj-val">—</div>
+      <div class="efield">
+        <div class="etop"><div class="ename">Subject</div><button class="cbtn" onclick="cpf('fsubj',this)">Copy</button></div>
+        <div class="fval" id="fsubj">—</div>
       </div>
-      <div class="email-field">
-        <div class="field-top"><div class="field-name">Email Body</div><button class="copy-btn" onclick="copyField('body-val',this)">Copy</button></div>
-        <div class="field-val body" id="body-val">—</div>
+      <div class="efield">
+        <div class="etop"><div class="ename">Email Body</div><button class="cbtn" onclick="cpf('fbody',this)">Copy</button></div>
+        <div class="fval body" id="fbody">—</div>
       </div>
-      <div class="action-row">
-        <button class="btn-action hi" onclick="openMail()">📧 Open Mail</button>
-        <button class="btn-action" onclick="copyAll(event)">📋 Copy All</button>
+
+      <div class="arow">
+        <button class="abtn hi" onclick="openMail()">📧 Open Mail</button>
+        <button class="abtn" onclick="cpAll(event)">📋 Copy All</button>
       </div>
-      <!-- AI TWEAK PANEL -->
-      <div class="tweak-section">
-        <div class="tweak-header">✦ AI Tweaks</div>
+
+      <!-- AI TWEAKS -->
+      <div class="tweak-sec">
+        <div class="tweak-hdr">✦ AI Tweaks</div>
         <div class="chips">
           <div class="chip" onclick="sendChip(this)">Make it shorter</div>
           <div class="chip" onclick="sendChip(this)">More formal</div>
@@ -168,154 +265,362 @@
           <div class="chip" onclick="sendChip(this)">Fix grammar</div>
           <div class="chip" onclick="sendChip(this)">Highlight top skill</div>
         </div>
-        <div class="chat-log" id="chat-log"></div>
-        <div class="tweak-input-row">
-          <textarea class="tweak-input" id="tweak-input" rows="1"
-            placeholder="e.g. make it shorter, add my GitHub link…"
-            oninput="autoResize(this)"
-            onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendTweak();}"></textarea>
-          <button class="tweak-send" id="tweak-send-btn" onclick="sendTweak()">➤</button>
+        <div class="chatlog" id="chatlog"></div>
+        <div class="tinrow">
+          <textarea class="tin" id="tin" rows="1"
+            placeholder="e.g. mention my GitHub, make subject punchier…"
+            oninput="ar(this)"
+            onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendTweak()}"></textarea>
+          <button class="tsend" id="tsend" onclick="sendTweak()">➤</button>
         </div>
       </div>
-      <div class="reset-link" onclick="resetApp()">← Start over with a new job post</div>
+
+      <div class="rlink" onclick="resetApp()">← Start over with a new job post</div>
     </div>
   </div>
-  <div class="bottom-bar" id="bottom-bar">
-    <button class="btn-main" id="gen-btn" onclick="generate()" disabled>✨ Generate Tailored Email</button>
+
+  <!-- BOTTOM BAR -->
+  <div class="bbar" id="bbar">
+    <button class="bmain" id="genbtn" onclick="generate()" disabled>✨ Generate Tailored Email</button>
   </div>
+
+  <!-- SETTINGS PANEL -->
+  <div class="panel" id="settings-panel">
+    <div class="panel-head">
+      <div class="panel-title">⚙️ Settings</div>
+      <div class="panel-close" onclick="closeSettings()">✕</div>
+    </div>
+    <div class="panel-body">
+
+      <!-- Provider picker -->
+      <div class="scard">
+        <div class="scard-title">🤖 Choose AI Provider</div>
+        <div class="scard-desc">Both work great. Gemini is 100% free with no credit card.</div>
+        <div class="provider-tabs">
+          <div class="ptab active" id="tab-gemini" onclick="switchProvider('gemini')">
+            Gemini<br><small style="font-size:.62rem;font-weight:400;color:var(--muted)">Google · Free ✓</small>
+          </div>
+          <div class="ptab" id="tab-claude" onclick="switchProvider('claude')">
+            Claude<br><small style="font-size:.62rem;font-weight:400;color:var(--muted)">Anthropic · $5 free</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Key input -->
+      <div class="scard">
+        <div class="scard-title" id="key-title">🔑 Gemini API Key</div>
+        <div class="scard-desc" id="key-desc">
+          Stored <strong>only on this device</strong> in your browser. Never uploaded or shared.
+          <br><a href="#" onclick="openKeyLink(event)" style="color:#b8aaff">Get a free key →</a>
+        </div>
+        <div class="sinput-wrap">
+          <input class="sinput" type="password" id="keyinput" placeholder="Paste your API key here…" oninput="onKeyInput()"/>
+          <button class="eye-btn" onclick="toggleEye()" id="eyebtn">👁</button>
+        </div>
+        <div class="key-status">
+          <div class="dot" id="ksdot"></div>
+          <span id="kstext">No key saved</span>
+        </div>
+        <button class="ssave" id="savebtn" onclick="saveKey()" disabled>Save Key</button>
+        <button class="sclear" onclick="clearKey()">Remove Saved Key</button>
+      </div>
+
+      <!-- How to get key -->
+      <div class="scard">
+        <div class="scard-title" id="how-title">📖 How to get a free Gemini key</div>
+        <div class="how-steps" id="how-steps"></div>
+      </div>
+
+      <div class="divider"></div>
+      <div class="privacy-note">🔒 Your key lives in your browser's localStorage — only on this device. It goes directly to Google/Anthropic's API and nowhere else.</div>
+    </div>
+  </div>
+
 </div>
 <script>
+// ── PWA ──
 let deferredPrompt=null;
-window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;document.getElementById('install-banner').classList.add('show')});
-document.getElementById('install-btn').addEventListener('click',async()=>{if(!deferredPrompt)return;deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;document.getElementById('install-banner').classList.remove('show')});
-window.addEventListener('appinstalled',()=>document.getElementById('install-banner').classList.remove('show'));
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;document.getElementById('ibanner').classList.add('show')});
+document.getElementById('ibtn').addEventListener('click',async()=>{if(!deferredPrompt)return;deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;document.getElementById('ibanner').classList.remove('show')});
+window.addEventListener('appinstalled',()=>document.getElementById('ibanner').classList.remove('show'));
 if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js'));
 
-let emailData=null,tweakHistory=[];
-const profileTA=document.getElementById('profile'),jobTA=document.getElementById('jobpost'),genBtn=document.getElementById('gen-btn');
+// ── State ──
+let emailData=null,tweakHistory=[],provider='gemini';
+const profileTA=document.getElementById('profile'),jobTA=document.getElementById('jobpost'),genbtn=document.getElementById('genbtn');
 
+// ── Key storage (localStorage, device only) ──
+const KEYS={gemini:'jm_gemini_key',claude:'jm_claude_key'};
+function getKey(){try{return localStorage.getItem(KEYS[provider])||''}catch(e){return''}}
+function setKey(v){try{localStorage.setItem(KEYS[provider],v)}catch(e){}}
+function delKey(){try{localStorage.removeItem(KEYS[provider])}catch(e){}}
+
+// ── Key status indicator ──
+function checkKeyStatus(){
+  const k=getKey();
+  const has=!!k;
+  document.getElementById('nokey-banner').style.display=has?'none':'flex';
+  document.getElementById('key-ind').textContent=has?'✅':'🔑';
+  return has;
+}
+
+// ── Settings ──
+function openSettings(){document.getElementById('settings-panel').classList.add('open');loadKeyUI();renderHowTo()}
+function closeSettings(){document.getElementById('settings-panel').classList.remove('open');checkKeyStatus()}
+
+function switchProvider(p){
+  provider=p;
+  document.getElementById('tab-gemini').classList.toggle('active',p==='gemini');
+  document.getElementById('tab-claude').classList.toggle('active',p==='claude');
+  loadKeyUI();renderHowTo();
+}
+
+function loadKeyUI(){
+  const k=getKey();
+  const inp=document.getElementById('keyinput');
+  inp.value=k?'••••••••••••••••':'';
+  inp.dataset.real=k||'';
+  inp.type='password';
+  document.getElementById('eyebtn').textContent='👁';
+  updateKS(k);
+  document.getElementById('savebtn').disabled=true;
+  document.getElementById('key-title').textContent=provider==='gemini'?'🔑 Gemini API Key':'🔑 Claude API Key';
+}
+
+function updateKS(k){
+  const dot=document.getElementById('ksdot'),txt=document.getElementById('kstext');
+  if(!k){dot.className='dot';txt.textContent='No key saved'}
+  else if(k.length>10){dot.className='dot ok';txt.textContent='Key saved on this device ✓'}
+  else{dot.className='dot err';txt.textContent='Key looks too short'}
+}
+
+function onKeyInput(){
+  const v=document.getElementById('keyinput').value;
+  document.getElementById('keyinput').dataset.real=v;
+  document.getElementById('savebtn').disabled=v.trim().length<10;
+  if(v.trim().length>10)updateKS(v.trim());
+}
+
+function toggleEye(){
+  const inp=document.getElementById('keyinput'),btn=document.getElementById('eyebtn');
+  if(inp.type==='password'){
+    inp.type='text';btn.textContent='🙈';
+    if(inp.dataset.real&&inp.value.includes('•'))inp.value=inp.dataset.real;
+  } else {inp.type='password';btn.textContent='👁'}
+}
+
+function saveKey(){
+  const v=(document.getElementById('keyinput').dataset.real||document.getElementById('keyinput').value).trim();
+  if(!v||v.length<10)return;
+  setKey(v);updateKS(v);
+  const btn=document.getElementById('savebtn');
+  btn.disabled=true;btn.textContent='✓ Saved!';
+  setTimeout(()=>btn.textContent='Save Key',2000);
+  if(navigator.vibrate)navigator.vibrate([30,15,30]);
+}
+
+function clearKey(){
+  delKey();
+  const inp=document.getElementById('keyinput');
+  inp.value='';inp.dataset.real='';
+  updateKS('');document.getElementById('savebtn').disabled=true;
+}
+
+function openKeyLink(e){
+  e.preventDefault();
+  window.open(provider==='gemini'?'https://aistudio.google.com/app/apikey':'https://console.anthropic.com','_blank');
+}
+
+function renderHowTo(){
+  document.getElementById('how-title').textContent=provider==='gemini'?'📖 How to get a free Gemini key':'📖 How to get a Claude key';
+  const steps=provider==='gemini'?[
+    ['Go to','aistudio.google.com','https://aistudio.google.com/app/apikey'],
+    ['Sign in with your','Google account',null],
+    ['Click','Create API Key',null],
+    ['Copy and paste it above',null,null],
+    ['It\'s','completely free — no credit card',null]
+  ]:[
+    ['Go to','console.anthropic.com','https://console.anthropic.com'],
+    ['Sign up for a','free account',null],
+    ['Go to','API Keys → Create Key',null],
+    ['Copy and paste it above',null,null],
+    ['You get','$5 free credits on signup',null]
+  ];
+  document.getElementById('how-steps').innerHTML=steps.map((s,i)=>`
+    <div class="how-step">
+      <div class="how-num">${i+1}</div>
+      <div class="how-text">${s[0]} ${s[1]?(s[2]?`<a href="${s[2]}" target="_blank"><strong>${s[1]}</strong></a>`:`<strong>${s[1]}</strong>`):''}
+      </div>
+    </div>`).join('');
+}
+
+// ── Input counters ──
 function updateCounts(){
   document.getElementById('pc').textContent=profileTA.value.length;
   document.getElementById('jc').textContent=jobTA.value.length;
-  genBtn.disabled=!profileTA.value.trim()||!jobTA.value.trim();
+  genbtn.disabled=!profileTA.value.trim()||!jobTA.value.trim();
 }
 profileTA.addEventListener('input',updateCounts);
 jobTA.addEventListener('input',updateCounts);
 
+// ── Steps ──
 function setStep(n){
-  ['s1','s2','s3'].forEach((id,i)=>{const el=document.getElementById(id);el.className='step-dot';if(i+1<n)el.classList.add('done');else if(i+1===n)el.classList.add('active')});
-  document.getElementById('line1').style.width=n>1?'100%':'0%';
-  document.getElementById('line2').style.width=n>2?'100%':'0%';
+  ['s1','s2','s3'].forEach((id,i)=>{const el=document.getElementById(id);el.className='step';if(i+1<n)el.classList.add('done');else if(i+1===n)el.classList.add('active')});
+  document.getElementById('l1').style.width=n>1?'100%':'0%';
+  document.getElementById('l2').style.width=n>2?'100%':'0%';
 }
 
-const examples={
+// ── Examples ──
+const EX={
   profile:`Name: Alex Rivera\nTitle: Full-Stack Developer\nSkills: React, Node.js, TypeScript, Python, AWS, PostgreSQL, Docker\nExperience: 5 years building scalable web apps\nEducation: B.S. Computer Science\nEmail: alex.rivera@email.com\nLinkedIn: linkedin.com/in/alexrivera\nGitHub: github.com/alexrivera`,
   job:`Senior Software Engineer – Acme Corp\n📍 Remote | 💰 $130K–$170K | Full-time\n\nWe're building the next generation of developer tools.\n\nRequirements:\n• 4+ years full-stack experience\n• Strong React and Node.js skills\n• TypeScript proficiency\n• Cloud experience (AWS preferred)\n• PostgreSQL experience\n\nContact: talent@acmecorp.com`
 };
-function loadExample(t){if(t==='profile')profileTA.value=examples.profile;else jobTA.value=examples.job;updateCounts();if(navigator.vibrate)navigator.vibrate(30)}
+function loadEx(t){
+  if(t==='profile')profileTA.value=EX.profile;else jobTA.value=EX.job;
+  updateCounts();if(navigator.vibrate)navigator.vibrate(25);
+}
 
+// ── AI call (Gemini or Claude) ──
+async function callAI(messages,systemPrompt){
+  const key=getKey();
+  if(!key)throw new Error('NO_KEY');
+  if(provider==='gemini'){
+    const contents=[];
+    if(systemPrompt){contents.push({role:'user',parts:[{text:systemPrompt}]},{role:'model',parts:[{text:'Understood.'}]})}
+    messages.forEach(m=>contents.push({role:m.role==='assistant'?'model':'user',parts:[{text:m.content}]}));
+    const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${key}`,{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({contents,generationConfig:{temperature:0.7,maxOutputTokens:1000}})
+    });
+    const data=await res.json();
+    if(data.error)throw new Error(data.error.message||'Gemini error');
+    return data.candidates[0].content.parts[0].text;
+  } else {
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:systemPrompt||undefined,messages})
+    });
+    const data=await res.json();
+    if(data.error)throw new Error(data.error.message||'Claude error');
+    return data.content.map(b=>b.text||'').join('');
+  }
+}
+
+// ── Generate ──
 async function generate(){
+  if(!checkKeyStatus()){openSettings();return}
   const profile=profileTA.value.trim(),job=jobTA.value.trim();
   if(!profile||!job)return;
-  genBtn.disabled=true;genBtn.innerHTML='<div class="spinner"></div> Crafting your email…';setStep(2);
+  genbtn.disabled=true;genbtn.innerHTML='<div class="spin"></div> Crafting your email…';setStep(2);
+  document.querySelectorAll('.errmsg').forEach(e=>e.remove());
   try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:`You are an expert career coach and email writer.\n\nMY PROFILE:\n${profile}\n\nJOB POSTING:\n${job}\n\n1. Extract the hiring email. If not found use "hiring@company.com".\n2. Write a compelling personalized outreach email under 180 words with a clear CTA.\n\nRespond ONLY in this exact JSON (no markdown):\n{"to":"email","subject":"subject","body":"body with \\n for newlines","matchScore":85,"matchReason":"one sentence"}`}]})});
-    const data=await res.json();
-    const raw=data.content.map(b=>b.text||'').join('').trim().replace(/\`\`\`json|\`\`\`/g,'').trim();
-    emailData=JSON.parse(raw);
-    tweakHistory=[{role:'user',content:`Here is the email you wrote. Keep as-is for now.\n\nSUBJECT: ${emailData.subject}\n\nBODY:\n${emailData.body}`},{role:'assistant',content:`Got it! Use the tweak options below to adjust anything.`}];
+    const prompt=`You are an expert career coach and email writer.\n\nMY PROFILE:\n${profile}\n\nJOB POSTING:\n${job}\n\n1. Extract the hiring email from the job posting. If not found use "hiring@company.com".\n2. Write a compelling personalized outreach email under 180 words with a clear CTA that matches my skills to their requirements.\n\nRespond ONLY in this exact JSON (no markdown, no extra text):\n{"to":"email","subject":"subject line","body":"email body with \\n for newlines","matchScore":85,"matchReason":"one sentence about fit"}`;
+    const raw=await callAI([{role:'user',content:prompt}]);
+    emailData=JSON.parse(raw.trim().replace(/```json|```/g,'').trim());
+    tweakHistory=[
+      {role:'user',content:`Here is the email you wrote. Keep as-is for now.\n\nSUBJECT: ${emailData.subject}\n\nBODY:\n${emailData.body}`},
+      {role:'assistant',content:'Got it! Use the tweak options to adjust anything.'}
+    ];
     renderResult(emailData);
-    if(navigator.vibrate)navigator.vibrate([50,30,50]);
+    if(navigator.vibrate)navigator.vibrate([50,25,50]);
   }catch(err){
-    document.getElementById('view-input').innerHTML+=`<div class="error-msg">⚠️ Something went wrong. Check your connection and try again.</div>`;
-    genBtn.disabled=false;genBtn.innerHTML='✨ Generate Tailored Email';setStep(1);
+    let msg='⚠️ Something went wrong. Please try again.';
+    if(err.message==='NO_KEY')msg='🔑 No API key found. Tap the key icon above to add yours.';
+    else if(/invalid|API_KEY/i.test(err.message))msg='🔑 Invalid API key. Go to Settings ⚙️ and check your key.';
+    else if(/quota|limit|429/i.test(err.message))msg='⚠️ API quota exceeded. Try again later or switch provider in Settings.';
+    document.getElementById('v-input').innerHTML+=`<div class="errmsg">${msg}</div>`;
+    genbtn.disabled=false;genbtn.innerHTML='✨ Generate Tailored Email';setStep(1);
   }
 }
 
 function renderResult(d){
   const score=d.matchScore||75,circ=125.6,offset=circ-(score/100)*circ;
-  const arc=document.getElementById('score-arc');
-  arc.style.strokeDashoffset=offset;arc.style.stroke=score>=80?'#43e97b':score>=60?'#f59e0b':'#ff6584';
-  document.getElementById('score-num').textContent=score+'%';
-  document.getElementById('match-reason').textContent=d.matchReason||'';
-  document.getElementById('to-val').textContent=d.to;
-  document.getElementById('subj-val').textContent=d.subject;
-  document.getElementById('body-val').textContent=d.body;
-  document.getElementById('view-input').style.display='none';
-  document.getElementById('view-result').style.display='block';
-  document.getElementById('bottom-bar').style.display='none';
-  document.getElementById('content').scrollTop=0;setStep(3);
+  const arc=document.getElementById('sarc');
+  arc.style.strokeDashoffset=offset;
+  arc.style.stroke=score>=80?'#00e5a0':score>=60?'#ffb347':'#ff6b9d';
+  document.getElementById('snum').textContent=score+'%';
+  document.getElementById('mreason').textContent=d.matchReason||'';
+  document.getElementById('fto').textContent=d.to;
+  document.getElementById('fsubj').textContent=d.subject;
+  document.getElementById('fbody').textContent=d.body;
+  document.getElementById('v-input').style.display='none';
+  document.getElementById('v-result').style.display='block';
+  document.getElementById('bbar').style.display='none';
+  document.getElementById('scroll').scrollTop=0;
+  setStep(3);
 }
 
-function autoResize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,100)+'px'}
-function sendChip(chip){document.getElementById('tweak-input').value=chip.textContent;sendTweak()}
+// ── Tweaks ──
+function ar(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,100)+'px'}
+function sendChip(c){document.getElementById('tin').value=c.textContent;sendTweak()}
 
 async function sendTweak(){
-  const input=document.getElementById('tweak-input'),sendBtn=document.getElementById('tweak-send-btn');
-  const instruction=input.value.trim();
-  if(!instruction||!emailData)return;
-  input.value='';input.style.height='auto';sendBtn.disabled=true;
-  if(navigator.vibrate)navigator.vibrate(20);
-  addChatMsg(instruction,'user');
-  const thinkEl=addChatMsg('Rewriting…','ai thinking');
-  const sysContext=`You are an AI email editor. Rewrite ONLY the subject and body of this job application email per the user's instruction. Keep it professional and human.\n\nCurrent email:\nSUBJECT: ${emailData.subject}\nBODY:\n${emailData.body}\n\nRespond ONLY in this JSON (no markdown):\n{"subject":"updated subject","body":"updated body with \\n for newlines","change":"one sentence what changed"}`;
-  const messages=[...tweakHistory,{role:'user',content:instruction}];
+  const tin=document.getElementById('tin'),tsend=document.getElementById('tsend');
+  const inst=tin.value.trim();if(!inst||!emailData)return;
+  tin.value='';tin.style.height='auto';tsend.disabled=true;
+  if(navigator.vibrate)navigator.vibrate(18);
+  addMsg(inst,'u');
+  const thinking=addMsg('Rewriting…','a thinking');
+  const sys=`You are an AI email editor. Rewrite the subject and body per the user's instruction. Keep it professional and human.\n\nCurrent email:\nSUBJECT: ${emailData.subject}\nBODY:\n${emailData.body}\n\nRespond ONLY in JSON (no markdown):\n{"subject":"updated subject","body":"updated body with \\n for newlines","change":"one sentence what changed"}`;
   try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:800,system:sysContext,messages})});
-    const data=await res.json();
-    const raw=data.content.map(b=>b.text||'').join('').trim().replace(/\`\`\`json|\`\`\`/g,'').trim();
-    const result=JSON.parse(raw);
-    emailData.subject=result.subject;emailData.body=result.body;
-    updateField('subj-val',result.subject);updateField('body-val',result.body);
-    thinkEl.classList.remove('thinking');thinkEl.textContent='✓ '+(result.change||'Done!');
-    tweakHistory.push({role:'user',content:instruction},{role:'assistant',content:result.change||'Updated.'});
-    document.getElementById('chat-log').lastChild.scrollIntoView({behavior:'smooth',block:'nearest'});
+    const raw=await callAI([...tweakHistory,{role:'user',content:inst}],sys);
+    const r=JSON.parse(raw.trim().replace(/```json|```/g,'').trim());
+    emailData.subject=r.subject;emailData.body=r.body;
+    updField('fsubj',r.subject);updField('fbody',r.body);
+    thinking.classList.remove('thinking');thinking.textContent='✓ '+(r.change||'Done!');
+    tweakHistory.push({role:'user',content:inst},{role:'assistant',content:r.change||'Updated.'});
   }catch(err){
-    thinkEl.classList.remove('thinking');thinkEl.textContent='⚠️ Failed. Try again.';thinkEl.style.color='#ff9ab0';
+    thinking.classList.remove('thinking');thinking.textContent='⚠️ Failed. Try again.';thinking.style.color='#ffa0bc';
   }
-  sendBtn.disabled=false;
+  tsend.disabled=false;
 }
 
-function addChatMsg(text,type){
-  const log=document.getElementById('chat-log'),el=document.createElement('div');
-  el.className='chat-msg '+type;el.textContent=text;log.appendChild(el);
+function addMsg(text,type){
+  const log=document.getElementById('chatlog'),el=document.createElement('div');
+  el.className='cmsg '+type;el.textContent=text;log.appendChild(el);
   el.scrollIntoView({behavior:'smooth',block:'nearest'});return el;
 }
-
-function updateField(id,text){
+function updField(id,text){
   const el=document.getElementById(id);el.textContent=text;
   el.classList.remove('flash');void el.offsetWidth;el.classList.add('flash');
 }
 
-function copyField(id,btn){
+// ── Actions ──
+function cpf(id,btn){
   navigator.clipboard.writeText(document.getElementById(id).textContent).then(()=>{
-    btn.textContent='✓ Copied!';btn.classList.add('copied');
-    setTimeout(()=>{btn.textContent='Copy';btn.classList.remove('copied')},2000);
+    btn.textContent='✓';btn.classList.add('ok');
+    setTimeout(()=>{btn.textContent='Copy';btn.classList.remove('ok')},2000);
   });
-  if(navigator.vibrate)navigator.vibrate(22);
+  if(navigator.vibrate)navigator.vibrate(20);
 }
-
-function copyAll(e){
+function cpAll(e){
   if(!emailData)return;
   navigator.clipboard.writeText(`To: ${emailData.to}\nSubject: ${emailData.subject}\n\n${emailData.body}`).then(()=>{
-    const btn=e.target;btn.textContent='✓ Copied!';setTimeout(()=>btn.textContent='📋 Copy All',2000);
+    e.target.textContent='✓ Copied!';setTimeout(()=>e.target.textContent='📋 Copy All',2000);
   });
-  if(navigator.vibrate)navigator.vibrate(22);
+  if(navigator.vibrate)navigator.vibrate(20);
 }
-
-function openMail(){if(!emailData)return;window.open(`mailto:${emailData.to}?subject=${encodeURIComponent(emailData.subject)}&body=${encodeURIComponent(emailData.body)}`,'_blank')}
-
+function openMail(){
+  if(!emailData)return;
+  window.open(`mailto:${emailData.to}?subject=${encodeURIComponent(emailData.subject)}&body=${encodeURIComponent(emailData.body)}`,'_blank');
+}
 function resetApp(){
   emailData=null;tweakHistory=[];
   profileTA.value='';jobTA.value='';updateCounts();
-  document.getElementById('chat-log').innerHTML='';
-  document.getElementById('view-result').style.display='none';
-  document.getElementById('view-input').style.display='block';
-  document.getElementById('bottom-bar').style.display='block';
-  genBtn.innerHTML='✨ Generate Tailored Email';setStep(1);
-  document.getElementById('content').scrollTop=0;
-  document.querySelectorAll('.error-msg').forEach(e=>e.remove());
+  document.getElementById('chatlog').innerHTML='';
+  document.getElementById('v-result').style.display='none';
+  document.getElementById('v-input').style.display='block';
+  document.getElementById('bbar').style.display='block';
+  genbtn.innerHTML='✨ Generate Tailored Email';
+  setStep(1);document.getElementById('scroll').scrollTop=0;
+  document.querySelectorAll('.errmsg').forEach(e=>e.remove());
+  checkKeyStatus();
 }
+
+// ── Init ──
+checkKeyStatus();
+renderHowTo();
 </script>
 </body>
 </html>
