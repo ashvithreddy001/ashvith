@@ -1,321 +1,832 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="theme-color" content="#6c63ff" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="JobMailer" />
-  <meta name="mobile-web-app-capable" content="yes" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover"/>
+  <meta name="theme-color" content="#0d0d14"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <meta name="apple-mobile-web-app-title" content="JobMailer"/>
+  <meta name="mobile-web-app-capable" content="yes"/>
   <title>JobMatch Mailer</title>
-  <link rel="manifest" href="manifest.json" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="manifest" href="manifest.json"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
   <style>
-    :root {
-      --bg:#0a0a0f;--card:#1a1a28;--card2:#13131e;--border:rgba(255,255,255,0.08);
-      --accent:#6c63ff;--green:#43e97b;--text:#f0eeff;--muted:rgba(240,238,255,0.4);
+    :root{
+      --bg:#0d0d14;--card:#17172a;--card2:#1e1e32;--card3:#12121f;
+      --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);
+      --accent:#7c6aff;--green:#00e5a0;--amber:#ffb347;--red:#ff6b9d;
+      --text:#eeeaff;--muted:rgba(238,234,255,0.45);--faint:rgba(238,234,255,0.18);
       --safe-top:env(safe-area-inset-top,0px);--safe-bottom:env(safe-area-inset-bottom,0px);
     }
     *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-    html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;overflow:hidden}
+    html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;overflow:hidden;-webkit-font-smoothing:antialiased}
     #app{display:flex;flex-direction:column;height:100dvh;padding-top:var(--safe-top)}
-    .topbar{display:flex;align-items:center;justify-content:space-between;padding:13px 18px 10px;border-bottom:1px solid var(--border);background:var(--bg);flex-shrink:0;z-index:10}
-    .topbar-logo{display:flex;align-items:center;gap:8px;font-size:1rem;font-weight:800;letter-spacing:-0.03em}
-    .logo-icon{width:30px;height:30px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px}
-    .topbar-badge{font-size:.62rem;background:rgba(108,99,255,.18);border:1px solid rgba(108,99,255,.35);color:#a99dff;padding:3px 8px;border-radius:20px;letter-spacing:.07em}
-    .stepbar{display:flex;align-items:center;padding:9px 18px;gap:5px;flex-shrink:0}
-    .step-dot{display:flex;align-items:center;gap:5px;font-size:.68rem;font-weight:600;letter-spacing:.05em;color:var(--muted);transition:color .3s}
-    .step-dot.active{color:var(--text)}.step-dot.done{color:var(--green)}
-    .step-num{width:19px;height:19px;border-radius:50%;border:1.5px solid currentColor;display:flex;align-items:center;justify-content:center;font-size:.6rem;font-family:'DM Mono',monospace;transition:all .3s}
-    .step-dot.active .step-num{background:var(--accent);border-color:var(--accent);color:white}
-    .step-dot.done .step-num{background:var(--green);border-color:var(--green);color:var(--bg)}
-    .step-line{flex:1;height:1.5px;background:var(--border);border-radius:2px;overflow:hidden}
-    .step-line-fill{height:100%;background:var(--green);width:0%;transition:width .5s ease}
-    #install-banner{display:none;margin:0 14px 8px;background:rgba(108,99,255,.12);border:1px solid rgba(108,99,255,.25);border-radius:12px;padding:10px 13px;align-items:center;gap:10px}
-    #install-banner.show{display:flex}
-    #install-banner p{flex:1;font-size:.75rem}
-    #install-banner p small{display:block;color:var(--muted);font-size:.65rem;margin-top:1px}
-    #install-btn{background:var(--accent);border:none;border-radius:7px;color:white;font-family:'Syne',sans-serif;font-size:.75rem;font-weight:700;padding:7px 13px;cursor:pointer;white-space:nowrap}
-    .content{flex:1;overflow-y:auto;padding:14px 14px 110px;-webkit-overflow-scrolling:touch}
-    .card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:10px}
-    .card-label{font-size:.65rem;letter-spacing:.12em;color:var(--muted);text-transform:uppercase;margin-bottom:9px;display:flex;align-items:center;gap:5px}
-    textarea{width:100%;background:rgba(0,0,0,.35);border:1px solid var(--border);border-radius:9px;color:var(--text);font-family:'DM Mono',monospace;font-size:.8rem;line-height:1.65;padding:11px;resize:none;transition:border-color .2s;outline:none}
-    textarea:focus{border-color:var(--accent)}
-    textarea::placeholder{color:rgba(255,255,255,.18);font-family:'Syne',sans-serif;font-size:.8rem}
-    .char-count{font-size:.65rem;color:var(--muted);font-family:'DM Mono',monospace;text-align:right;margin-top:5px}
-    .example-btn{font-size:.68rem;background:rgba(108,99,255,.1);border:1px solid rgba(108,99,255,.22);color:#a99dff;padding:3px 9px;border-radius:6px;cursor:pointer;font-family:'Syne',sans-serif;margin-left:auto;display:block;margin-bottom:7px}
-    .bottom-bar{position:fixed;bottom:0;left:0;right:0;background:linear-gradient(to top,var(--bg) 65%,transparent);padding:14px 14px calc(14px + var(--safe-bottom));z-index:20}
-    .btn-main{width:100%;background:linear-gradient(135deg,var(--accent),#9c6bff);border:none;border-radius:13px;color:white;font-family:'Syne',sans-serif;font-size:.95rem;font-weight:700;letter-spacing:.03em;padding:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 8px 28px rgba(108,99,255,.32);transition:all .2s;-webkit-appearance:none}
-    .btn-main:active{transform:scale(.97)}.btn-main:disabled{opacity:.38;box-shadow:none;cursor:not-allowed}
-    .spinner{width:16px;height:16px;border:2px solid rgba(255,255,255,.28);border-top-color:white;border-radius:50%;animation:spin .7s linear infinite}
-    @keyframes spin{to{transform:rotate(360deg)}}
-    @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
-    .result-screen{animation:fadeUp .4s ease}
-    .match-bar{display:flex;align-items:center;gap:13px;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:13px 15px;margin-bottom:10px}
-    .score-ring{position:relative;width:50px;height:50px;flex-shrink:0}
-    .score-ring svg{transform:rotate(-90deg)}
-    .score-label{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:.74rem;font-weight:500}
-    .match-text strong{display:block;font-size:.8rem;font-weight:700;margin-bottom:2px}
-    .match-text p{font-size:.72rem;color:var(--muted);line-height:1.45}
-    .email-field{margin-bottom:10px}
-    .field-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px}
-    .field-name{font-size:.63rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
-    .copy-btn{font-size:.67rem;background:rgba(255,255,255,.05);border:1px solid var(--border);color:var(--text);padding:3px 9px;border-radius:6px;cursor:pointer;font-family:'Syne',sans-serif;transition:all .15s}
-    .copy-btn:active{background:rgba(108,99,255,.22)}.copy-btn.copied{color:var(--green);border-color:var(--green)}
-    .field-val{background:rgba(0,0,0,.3);border:1px solid var(--border);border-radius:9px;padding:10px 12px;font-size:.82rem;line-height:1.6;font-family:'DM Mono',monospace;word-break:break-all;color:var(--text)}
-    .field-val.to{color:var(--green)}
-    .field-val.body{white-space:pre-wrap;font-size:.78rem;max-height:180px;overflow-y:auto;word-break:normal}
-    .action-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
-    .btn-action{background:var(--card);border:1px solid var(--border);border-radius:11px;color:var(--text);font-family:'Syne',sans-serif;font-size:.8rem;font-weight:600;padding:12px 8px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:all .15s}
-    .btn-action:active{background:rgba(255,255,255,.08)}
-    .btn-action.hi{background:linear-gradient(135deg,var(--accent),#9c6bff);border-color:transparent;box-shadow:0 4px 14px rgba(108,99,255,.28)}
-    .tweak-section{margin-top:16px}
-    .tweak-header{display:flex;align-items:center;gap:8px;font-size:.7rem;font-weight:700;letter-spacing:.08em;color:#a99dff;text-transform:uppercase;margin-bottom:10px}
-    .tweak-header::after{content:'';flex:1;height:1px;background:rgba(108,99,255,.2)}
-    .chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
-    .chip{background:rgba(108,99,255,.1);border:1px solid rgba(108,99,255,.2);color:#c4bcff;border-radius:20px;padding:5px 11px;font-size:.72rem;cursor:pointer;font-family:'Syne',sans-serif;transition:all .15s;white-space:nowrap}
-    .chip:active{background:rgba(108,99,255,.3);border-color:rgba(108,99,255,.5)}
-    .chat-log{display:flex;flex-direction:column;gap:8px;margin-bottom:10px}
-    .chat-msg{border-radius:11px;padding:9px 12px;font-size:.77rem;line-height:1.5;max-width:90%;animation:fadeUp .25s ease}
-    .chat-msg.user{background:rgba(108,99,255,.18);border:1px solid rgba(108,99,255,.25);color:var(--text);align-self:flex-end}
-    .chat-msg.ai{background:var(--card2);border:1px solid var(--border);color:var(--muted);align-self:flex-start}
-    .chat-msg.ai.thinking{opacity:.6;font-style:italic}
-    .tweak-input-row{display:flex;gap:8px;align-items:flex-end}
-    .tweak-input{flex:1;background:rgba(0,0,0,.35);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:'Syne',sans-serif;font-size:.82rem;padding:10px 12px;outline:none;transition:border-color .2s;resize:none;line-height:1.4}
-    .tweak-input:focus{border-color:var(--accent)}
-    .tweak-input::placeholder{color:rgba(255,255,255,.2)}
-    .tweak-send{width:40px;height:40px;flex-shrink:0;background:var(--accent);border:none;border-radius:10px;color:white;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all .15s}
-    .tweak-send:active{transform:scale(.92)}.tweak-send:disabled{opacity:.35;cursor:not-allowed}
-    .reset-link{text-align:center;padding:14px 10px 4px;color:var(--muted);font-size:.75rem;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
-    .error-msg{background:rgba(255,101,132,.08);border:1px solid rgba(255,101,132,.25);border-radius:9px;padding:11px;font-size:.8rem;color:#ff9ab0;text-align:center;margin-top:8px}
-    @keyframes flashBorder{0%{border-color:var(--green);box-shadow:0 0 0 2px rgba(67,233,123,.2)}100%{border-color:var(--border);box-shadow:none}}
-    .flash{animation:flashBorder 1.2s ease forwards}
+    /* NAV */
+    .nav{display:flex;align-items:center;justify-content:space-between;padding:11px 15px;border-bottom:1px solid var(--border);flex-shrink:0;background:var(--bg);z-index:30}
+    .nav-brand{display:flex;align-items:center;gap:9px}
+    .nav-icon{width:33px;height:33px;border-radius:10px;background:linear-gradient(135deg,#7c6aff,#b06aff);display:flex;align-items:center;justify-content:center;font-size:17px;box-shadow:0 4px 14px rgba(124,106,255,.4)}
+    .nav-title{font-size:.98rem;font-weight:800;letter-spacing:-.02em}
+    .nav-pill{display:flex;align-items:center;gap:6px;background:var(--card2);border:1px solid var(--border2);border-radius:20px;padding:5px 11px;cursor:pointer;font-size:.72rem;font-weight:600;white-space:nowrap}
+    .ndot{width:7px;height:7px;border-radius:50%;flex-shrink:0;background:var(--faint);transition:all .3s}
+    .ndot.ok{background:var(--green);box-shadow:0 0 6px rgba(0,229,160,.5)}
+    .ndot.warn{background:var(--amber);box-shadow:0 0 6px rgba(255,179,71,.5)}
+    .ndot.err{background:var(--red);box-shadow:0 0 6px rgba(255,107,157,.4)}
+    /* STEPS */
+    .steps{display:flex;align-items:center;padding:9px 15px 7px;gap:4px;flex-shrink:0;border-bottom:1px solid var(--border)}
+    .step{display:flex;align-items:center;gap:5px;font-size:.66rem;font-weight:600;letter-spacing:.04em;color:var(--faint);transition:color .3s;white-space:nowrap}
+    .step.active{color:var(--text)}.step.done{color:var(--green)}
+    .step-n{width:18px;height:18px;border-radius:50%;border:1.5px solid currentColor;display:flex;align-items:center;justify-content:center;font-size:.58rem;font-family:'JetBrains Mono',monospace;transition:all .3s;flex-shrink:0}
+    .step.active .step-n{background:var(--accent);border-color:var(--accent);color:#fff}
+    .step.done .step-n{background:var(--green);border-color:var(--green);color:var(--bg)}
+    .step-line{flex:1;height:1px;background:var(--border);overflow:hidden;border-radius:2px}
+    .step-line-f{height:100%;background:var(--green);width:0%;transition:width .5s ease}
+    /* INSTALL */
+    #ibanner{display:none;margin:10px 14px 0;background:linear-gradient(135deg,rgba(124,106,255,.1),rgba(176,106,255,.07));border:1px solid rgba(124,106,255,.22);border-radius:12px;padding:10px 13px;align-items:center;gap:10px}
+    #ibanner.show{display:flex}
+    #ibanner p{flex:1;font-size:.74rem;line-height:1.4}
+    #ibanner p small{color:var(--muted);font-size:.63rem;display:block;margin-top:1px}
+    #ibtn{background:var(--accent);border:none;border-radius:8px;color:#fff;font-family:'Outfit',sans-serif;font-size:.74rem;font-weight:700;padding:7px 12px;cursor:pointer;white-space:nowrap}
+    /* SCROLL */
+    .scroll{flex:1;overflow-y:auto;padding:13px 13px 110px;-webkit-overflow-scrolling:touch}
+    /* CARDS */
+    .card{background:var(--card);border:1px solid var(--border);border-radius:15px;padding:14px;margin-bottom:10px}
+    .clabel{font-size:.62rem;letter-spacing:.12em;color:var(--muted);text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between}
+    textarea{width:100%;background:rgba(0,0,0,.28);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:.78rem;line-height:1.7;padding:11px;resize:none;transition:border-color .2s;outline:none}
+    textarea:focus{border-color:var(--accent);background:rgba(0,0,0,.4)}
+    textarea::placeholder{color:var(--faint);font-family:'Outfit',sans-serif;font-size:.78rem;line-height:1.5}
+    .ccount{font-size:.62rem;color:var(--faint);font-family:'JetBrains Mono',monospace;text-align:right;margin-top:4px}
+    .ex-btn{font-size:.66rem;background:rgba(124,106,255,.1);border:1px solid rgba(124,106,255,.2);color:#b8aaff;padding:3px 9px;border-radius:6px;cursor:pointer;font-family:'Outfit',sans-serif;font-weight:600}
+    /* NO KEY */
+    .nokey{background:linear-gradient(135deg,rgba(255,107,157,.07),rgba(255,179,71,.05));border:1px solid rgba(255,107,157,.2);border-radius:13px;padding:14px 15px;margin-bottom:12px;display:flex;align-items:center;gap:12px;cursor:pointer}
+    .nokey-icon{font-size:24px;flex-shrink:0}
+    .nokey-body{flex:1}
+    .nokey-body strong{display:block;font-size:.84rem;font-weight:700;margin-bottom:3px}
+    .nokey-body p{font-size:.72rem;color:var(--muted);line-height:1.4}
+    .nokey-arr{font-size:20px;color:var(--muted);flex-shrink:0}
+    /* BOTTOM BAR */
+    .bbar{position:fixed;bottom:0;left:0;right:0;background:linear-gradient(to top,var(--bg) 55%,transparent);padding:12px 13px calc(12px + var(--safe-bottom));z-index:20}
+    .bmain{width:100%;background:linear-gradient(135deg,#7c6aff,#b06aff);border:none;border-radius:14px;color:#fff;font-family:'Outfit',sans-serif;font-size:.96rem;font-weight:800;padding:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;box-shadow:0 8px 30px rgba(124,106,255,.38);transition:all .2s;-webkit-appearance:none}
+    .bmain:active{transform:scale(.97)}.bmain:disabled{opacity:.32;box-shadow:none;cursor:not-allowed}
+    /* SPINNER */
+    .spin{width:16px;height:16px;border:2.5px solid rgba(255,255,255,.22);border-top-color:#fff;border-radius:50%;animation:spinning .65s linear infinite;flex-shrink:0}
+    @keyframes spinning{to{transform:rotate(360deg)}}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes pop{0%{transform:scale(.93)}60%{transform:scale(1.02)}100%{transform:scale(1)}}
+    @keyframes flash{0%{border-color:var(--green);box-shadow:0 0 0 3px rgba(0,229,160,.14)}100%{border-color:var(--border);box-shadow:none}}
+    .flash{animation:flash 1.5s ease forwards}
+    .result-wrap{animation:fadeUp .4s ease}
+    /* RESULT */
+    .match-card{display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,var(--card),var(--card2));border:1px solid var(--border2);border-radius:15px;padding:14px 16px;margin-bottom:11px;animation:pop .4s ease}
+    .sring{position:relative;width:54px;height:54px;flex-shrink:0}
+    .sring svg{transform:rotate(-90deg)}
+    .slabel{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:.74rem;font-weight:500}
+    .mtext strong{display:block;font-size:.82rem;font-weight:700;margin-bottom:3px}
+    .mtext p{font-size:.71rem;color:var(--muted);line-height:1.45}
+    .efield{margin-bottom:10px}
+    .etop{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px}
+    .ename{font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:600}
+    .cbtn{font-size:.65rem;background:rgba(255,255,255,.05);border:1px solid var(--border2);color:var(--text);padding:3px 10px;border-radius:7px;cursor:pointer;font-family:'Outfit',sans-serif;font-weight:600}
+    .cbtn.ok{color:var(--green);border-color:rgba(0,229,160,.35);background:rgba(0,229,160,.06)}
+    .fval{background:rgba(0,0,0,.25);border:1px solid var(--border);border-radius:10px;padding:10px 12px;font-size:.8rem;line-height:1.6;font-family:'JetBrains Mono',monospace;word-break:break-all;color:var(--text);transition:border-color .4s,box-shadow .4s}
+    .fval.to{color:var(--green);font-weight:500}
+    .fval.body{white-space:pre-wrap;font-size:.76rem;max-height:175px;overflow-y:auto;word-break:normal}
+    .arow{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:11px}
+    .abtn{background:var(--card2);border:1px solid var(--border2);border-radius:12px;color:var(--text);font-family:'Outfit',sans-serif;font-size:.78rem;font-weight:700;padding:13px 8px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px}
+    .abtn.hi{background:linear-gradient(135deg,#7c6aff,#b06aff);border-color:transparent;box-shadow:0 5px 16px rgba(124,106,255,.32)}
+    /* TWEAK */
+    .tweak-sec{margin-top:16px}
+    .tweak-hdr{display:flex;align-items:center;gap:8px;font-size:.66rem;font-weight:800;letter-spacing:.1em;color:#b8aaff;text-transform:uppercase;margin-bottom:10px}
+    .tweak-hdr::after{content:'';flex:1;height:1px;background:linear-gradient(to right,rgba(124,106,255,.3),transparent)}
+    .chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:11px}
+    .chip{background:rgba(124,106,255,.08);border:1px solid rgba(124,106,255,.17);color:#c4b8ff;border-radius:20px;padding:6px 12px;font-size:.7rem;cursor:pointer;font-family:'Outfit',sans-serif;font-weight:600;white-space:nowrap}
+    .chip:active{background:rgba(124,106,255,.25);transform:scale(.96)}
+    .chatlog{display:flex;flex-direction:column;gap:7px;margin-bottom:10px}
+    .cmsg{border-radius:12px;padding:9px 13px;font-size:.75rem;line-height:1.5;max-width:88%;animation:fadeUp .22s ease}
+    .cmsg.u{background:linear-gradient(135deg,rgba(124,106,255,.18),rgba(124,106,255,.1));border:1px solid rgba(124,106,255,.22);color:var(--text);align-self:flex-end}
+    .cmsg.a{background:var(--card3);border:1px solid var(--border);color:var(--muted);align-self:flex-start}
+    .cmsg.a.thinking{opacity:.5;font-style:italic}
+    .cmsg.a.ok{color:var(--green)}
+    .tinrow{display:flex;gap:8px;align-items:flex-end}
+    .tin{flex:1;background:rgba(0,0,0,.28);border:1px solid var(--border);border-radius:11px;color:var(--text);font-family:'Outfit',sans-serif;font-size:.82rem;padding:10px 13px;outline:none;resize:none;line-height:1.4}
+    .tin:focus{border-color:var(--accent)}
+    .tin::placeholder{color:var(--faint)}
+    .tsend{width:42px;height:42px;flex-shrink:0;background:linear-gradient(135deg,var(--accent),#b06aff);border:none;border-radius:11px;color:#fff;cursor:pointer;font-size:17px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(124,106,255,.35)}
+    .tsend:disabled{opacity:.3;cursor:not-allowed;box-shadow:none}
+    .rlink{text-align:center;padding:15px 10px 4px;color:var(--faint);font-size:.72rem;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+    .errmsg{background:rgba(255,107,157,.07);border:1px solid rgba(255,107,157,.2);border-radius:10px;padding:12px 14px;font-size:.78rem;color:#ffa0bc;text-align:center;margin-top:8px;line-height:1.5}
+    /* SETTINGS PANEL */
+    .panel{position:fixed;inset:0;z-index:100;display:flex;flex-direction:column;background:var(--bg);transform:translateX(100%);transition:transform .32s cubic-bezier(.4,0,.2,1)}
+    .panel.open{transform:translateX(0)}
+    .panel-head{display:flex;align-items:center;justify-content:space-between;padding:calc(13px + var(--safe-top)) 15px 13px;border-bottom:1px solid var(--border);flex-shrink:0}
+    .panel-title{font-size:1rem;font-weight:800;letter-spacing:-.02em}
+    .panel-close{width:33px;height:33px;border-radius:9px;border:1px solid var(--border2);background:var(--card2);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;color:var(--muted);font-weight:700}
+    .panel-close:active{background:rgba(255,107,157,.15);color:var(--red)}
+    .panel-scroll{flex:1;overflow-y:auto;padding:16px 13px calc(36px + var(--safe-bottom))}
+    .scard{background:var(--card);border:1px solid var(--border);border-radius:15px;padding:15px;margin-bottom:12px}
+    .scard-hd{font-size:.82rem;font-weight:700;margin-bottom:3px}
+    .scard-sub{font-size:.71rem;color:var(--muted);line-height:1.5;margin-bottom:12px}
+    .scard-sub a{color:#b8aaff;text-decoration:none;font-weight:600}
+    /* Provider grid */
+    .ptabs{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+    .ptab{background:var(--card2);border:1px solid var(--border);border-radius:11px;padding:10px 8px;font-size:.74rem;font-weight:700;text-align:center;cursor:pointer;color:var(--muted);line-height:1.35;transition:all .2s}
+    .ptab small{display:block;font-size:.6rem;font-weight:400;margin-top:2px}
+    .ptab.active{background:rgba(124,106,255,.16);border-color:rgba(124,106,255,.4);color:var(--text)}
+    .ptab.active small{color:#b8aaff}
+    /* AUTO ROTATE */
+    .autorot{display:flex;align-items:center;gap:8px;background:rgba(0,229,160,.06);border:1px solid rgba(0,229,160,.18);border-radius:10px;padding:9px 12px;margin-bottom:12px;font-size:.72rem;color:var(--green)}
+    .autorot span{color:var(--muted)}
+    /* KEY POOL */
+    .pool-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+    .pool-title{font-size:.82rem;font-weight:700}
+    .pool-count{font-size:.68rem;font-family:'JetBrains Mono',monospace;background:rgba(124,106,255,.15);color:#b8aaff;border-radius:6px;padding:2px 8px}
+    .add-key-row{display:flex;gap:7px;margin-bottom:12px;align-items:center}
+    .new-key-input{flex:1;background:rgba(0,0,0,.32);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:.76rem;padding:10px 12px;outline:none;transition:border-color .2s;min-width:0}
+    .new-key-input:focus{border-color:var(--accent)}
+    .new-key-input::placeholder{color:var(--faint);font-family:'Outfit',sans-serif;font-size:.74rem}
+    .eye-btn{width:38px;height:38px;flex-shrink:0;background:rgba(255,255,255,.05);border:1px solid var(--border2);border-radius:9px;color:var(--muted);cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center}
+    .add-btn{background:linear-gradient(135deg,var(--accent),#b06aff);border:none;border-radius:10px;color:#fff;font-family:'Outfit',sans-serif;font-size:.8rem;font-weight:700;padding:10px 14px;cursor:pointer;white-space:nowrap;box-shadow:0 4px 12px rgba(124,106,255,.3);flex-shrink:0}
+    .add-btn:active{transform:scale(.95)}
+    .key-list{display:flex;flex-direction:column;gap:8px}
+    .key-item{background:rgba(0,0,0,.22);border:1px solid var(--border);border-radius:12px;padding:11px 13px;display:flex;align-items:center;gap:10px;transition:all .3s}
+    .key-item.active-key{border-color:rgba(0,229,160,.3);background:rgba(0,229,160,.04)}
+    .key-item.exhausted{border-color:rgba(255,107,157,.2);opacity:.7}
+    .key-badge{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;flex-shrink:0}
+    .key-badge.is-active{background:rgba(0,229,160,.15);color:var(--green);border:1px solid rgba(0,229,160,.3)}
+    .key-badge.is-idle{background:rgba(255,255,255,.05);color:var(--muted);border:1px solid var(--border)}
+    .key-badge.is-out{background:rgba(255,107,157,.1);color:var(--red);border:1px solid rgba(255,107,157,.2)}
+    .key-info{flex:1;min-width:0}
+    .key-preview{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .key-status-text{font-size:.64rem;color:var(--muted)}
+    .key-bar-wrap{height:3px;background:rgba(255,255,255,.06);border-radius:2px;margin:5px 0 3px;overflow:hidden}
+    .key-bar{height:100%;border-radius:2px;transition:width .8s ease,background .5s}
+    .key-uses{font-size:.62rem;font-family:'JetBrains Mono',monospace;color:var(--faint)}
+    .key-actions{display:flex;align-items:center;gap:6px;flex-shrink:0}
+    .key-use-btn{font-size:.65rem;background:rgba(124,106,255,.12);border:1px solid rgba(124,106,255,.2);color:#b8aaff;padding:3px 8px;border-radius:6px;cursor:pointer;font-family:'Outfit',sans-serif;font-weight:600}
+    .key-del{width:26px;height:26px;border-radius:7px;background:rgba(255,107,157,.08);border:1px solid rgba(255,107,157,.18);color:var(--red);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px}
+    .empty-pool{text-align:center;padding:20px 10px;color:var(--faint);font-size:.75rem;line-height:1.6}
+    /* HOW TO */
+    .how-steps{display:flex;flex-direction:column;gap:10px}
+    .how-step{display:flex;gap:11px;align-items:flex-start}
+    .how-num{width:22px;height:22px;border-radius:50%;background:rgba(124,106,255,.13);border:1px solid rgba(124,106,255,.28);color:#b8aaff;font-size:.62rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+    .how-text{font-size:.74rem;color:var(--muted);line-height:1.5}
+    .how-text strong{color:var(--text)}
+    .how-text a{color:#b8aaff;text-decoration:none;font-weight:700}
+    .divider{height:1px;background:var(--border);margin:14px 0}
+    .privacy{font-size:.69rem;color:var(--faint);line-height:1.6;text-align:center;padding:0 6px}
+    /* TOAST */
+    .toast{position:fixed;bottom:calc(90px + var(--safe-bottom));left:50%;transform:translateX(-50%) translateY(20px);background:var(--card2);border:1px solid var(--border2);border-radius:12px;padding:10px 18px;font-size:.78rem;font-weight:600;z-index:200;white-space:nowrap;opacity:0;transition:all .3s;pointer-events:none}
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+    ::-webkit-scrollbar{width:0}
   </style>
 </head>
 <body>
 <div id="app">
-  <div class="topbar">
-    <div class="topbar-logo"><div class="logo-icon">✉</div>JobMatch Mailer</div>
-    <div class="topbar-badge">AI POWERED</div>
+  <!-- NAV -->
+  <div class="nav">
+    <div class="nav-brand">
+      <div class="nav-icon">✉</div>
+      <span class="nav-title">JobMatch Mailer</span>
+    </div>
+    <div class="nav-pill" id="nav-pill" onclick="openSettings()">
+      <div class="ndot" id="ndot"></div>
+      <span id="nlabel">Setup</span>
+      <span style="color:rgba(238,234,255,.4);font-size:.68rem">⚙️</span>
+    </div>
   </div>
-  <div id="install-banner">
-    <p>Install as App <small>Works offline · No app store needed</small></p>
-    <button id="install-btn">Install</button>
+
+  <!-- INSTALL -->
+  <div id="ibanner">
+    <p>📲 Install as App <small>Works offline · Feels native</small></p>
+    <button id="ibtn">Install</button>
   </div>
-  <div class="stepbar">
-    <div class="step-dot active" id="s1"><div class="step-num">1</div>Profile</div>
-    <div class="step-line"><div class="step-line-fill" id="line1"></div></div>
-    <div class="step-dot" id="s2"><div class="step-num">2</div>Job Post</div>
-    <div class="step-line"><div class="step-line-fill" id="line2"></div></div>
-    <div class="step-dot" id="s3"><div class="step-num">3</div>Send</div>
+
+  <!-- STEPS -->
+  <div class="steps">
+    <div class="step active" id="s1"><div class="step-n">1</div>Profile</div>
+    <div class="step-line"><div class="step-line-f" id="l1"></div></div>
+    <div class="step" id="s2"><div class="step-n">2</div>Job Post</div>
+    <div class="step-line"><div class="step-line-f" id="l2"></div></div>
+    <div class="step" id="s3"><div class="step-n">3</div>Email Ready</div>
   </div>
-  <div class="content" id="content">
-    <!-- STEP 1 -->
-    <div id="view-input">
-      <div class="card">
-        <div class="card-label"><span>👤</span> Your Profile</div>
-        <button class="example-btn" onclick="loadExample('profile')">Load example</button>
-        <textarea id="profile" rows="7" placeholder="Paste your profile or resume summary…&#10;&#10;Include: name, title, skills, years of experience, your email address"></textarea>
-        <div class="char-count"><span id="pc">0</span> chars</div>
+
+  <div class="scroll" id="scroll">
+    <!-- INPUT VIEW -->
+    <div id="v-input">
+      <div class="nokey" id="nokey" onclick="openSettings()" style="display:none">
+        <div class="nokey-icon">🔑</div>
+        <div class="nokey-body">
+          <strong>Add your API key to get started</strong>
+          <p>Free keys available — no credit card. Add multiple for auto-rotation.</p>
+        </div>
+        <div class="nokey-arr">›</div>
       </div>
       <div class="card">
-        <div class="card-label"><span>📋</span> Job Posting</div>
-        <button class="example-btn" onclick="loadExample('job')">Load example</button>
-        <textarea id="jobpost" rows="8" placeholder="Paste the full job posting here…&#10;&#10;The AI will auto-detect the hiring email, company, and requirements."></textarea>
-        <div class="char-count"><span id="jc">0</span> chars</div>
+        <div class="clabel">
+          <span>👤 Your Profile</span>
+          <button class="ex-btn" onclick="loadEx('profile')">Load example</button>
+        </div>
+        <textarea id="profile" rows="7" placeholder="Paste your resume summary or LinkedIn bio…&#10;&#10;✓ Name &amp; job title&#10;✓ Key skills&#10;✓ Years of experience&#10;✓ Your email address"></textarea>
+        <div class="ccount"><span id="pc">0</span> chars</div>
+      </div>
+      <div class="card">
+        <div class="clabel">
+          <span>📋 Job Posting</span>
+          <button class="ex-btn" onclick="loadEx('job')">Load example</button>
+        </div>
+        <textarea id="jobpost" rows="8" placeholder="Paste the full job posting here…&#10;&#10;✓ AI auto-detects the hiring email&#10;✓ Matches your skills to requirements&#10;✓ Writes a tailored email instantly"></textarea>
+        <div class="ccount"><span id="jc">0</span> chars</div>
       </div>
     </div>
-    <!-- STEP 2 -->
-    <div id="view-result" style="display:none" class="result-screen">
-      <div class="match-bar">
-        <div class="score-ring">
-          <svg width="50" height="50" viewBox="0 0 50 50">
-            <circle cx="25" cy="25" r="20" fill="none" stroke="rgba(255,255,255,.07)" stroke-width="4"/>
-            <circle cx="25" cy="25" r="20" fill="none" id="score-arc" stroke="#43e97b" stroke-width="4" stroke-linecap="round" stroke-dasharray="125.6" stroke-dashoffset="125.6" style="transition:stroke-dashoffset 1s ease,stroke .5s"/>
+
+    <!-- RESULT VIEW -->
+    <div id="v-result" style="display:none" class="result-wrap">
+      <div class="match-card">
+        <div class="sring">
+          <svg width="54" height="54" viewBox="0 0 54 54">
+            <circle cx="27" cy="27" r="22" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="4.5"/>
+            <circle cx="27" cy="27" r="22" fill="none" id="sarc" stroke="#00e5a0" stroke-width="4.5" stroke-linecap="round" stroke-dasharray="138.2" stroke-dashoffset="138.2" style="transition:stroke-dashoffset 1s ease,stroke .5s"/>
           </svg>
-          <div class="score-label" id="score-num">—</div>
+          <div class="slabel" id="snum">—</div>
         </div>
-        <div class="match-text"><strong>Profile Match</strong><p id="match-reason">Analyzing…</p></div>
+        <div class="mtext"><strong>Profile Match</strong><p id="mreason"></p></div>
       </div>
-      <div class="email-field">
-        <div class="field-top"><div class="field-name">To</div><button class="copy-btn" onclick="copyField('to-val',this)">Copy</button></div>
-        <div class="field-val to" id="to-val">—</div>
+      <div class="efield">
+        <div class="etop"><div class="ename">To</div><button class="cbtn" onclick="cpf('fto',this)">Copy</button></div>
+        <div class="fval to" id="fto">—</div>
       </div>
-      <div class="email-field">
-        <div class="field-top"><div class="field-name">Subject</div><button class="copy-btn" onclick="copyField('subj-val',this)">Copy</button></div>
-        <div class="field-val" id="subj-val">—</div>
+      <div class="efield">
+        <div class="etop"><div class="ename">Subject</div><button class="cbtn" onclick="cpf('fsubj',this)">Copy</button></div>
+        <div class="fval" id="fsubj">—</div>
       </div>
-      <div class="email-field">
-        <div class="field-top"><div class="field-name">Email Body</div><button class="copy-btn" onclick="copyField('body-val',this)">Copy</button></div>
-        <div class="field-val body" id="body-val">—</div>
+      <div class="efield">
+        <div class="etop"><div class="ename">Email Body</div><button class="cbtn" onclick="cpf('fbody',this)">Copy</button></div>
+        <div class="fval body" id="fbody">—</div>
       </div>
-      <div class="action-row">
-        <button class="btn-action hi" onclick="openMail()">📧 Open Mail</button>
-        <button class="btn-action" onclick="copyAll(event)">📋 Copy All</button>
+      <div class="arow">
+        <button class="abtn hi" onclick="openMail()">📧 Open in Mail</button>
+        <button class="abtn" onclick="cpAll(event)">📋 Copy All</button>
       </div>
-      <!-- AI TWEAK PANEL -->
-      <div class="tweak-section">
-        <div class="tweak-header">✦ AI Tweaks</div>
+      <div class="tweak-sec">
+        <div class="tweak-hdr">✦ AI Tweaks</div>
         <div class="chips">
           <div class="chip" onclick="sendChip(this)">Make it shorter</div>
           <div class="chip" onclick="sendChip(this)">More formal</div>
           <div class="chip" onclick="sendChip(this)">More casual</div>
-          <div class="chip" onclick="sendChip(this)">Add more energy</div>
+          <div class="chip" onclick="sendChip(this)">Add energy</div>
           <div class="chip" onclick="sendChip(this)">Stronger opening</div>
           <div class="chip" onclick="sendChip(this)">Better CTA</div>
           <div class="chip" onclick="sendChip(this)">Fix grammar</div>
           <div class="chip" onclick="sendChip(this)">Highlight top skill</div>
         </div>
-        <div class="chat-log" id="chat-log"></div>
-        <div class="tweak-input-row">
-          <textarea class="tweak-input" id="tweak-input" rows="1"
-            placeholder="e.g. make it shorter, add my GitHub link…"
-            oninput="autoResize(this)"
-            onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendTweak();}"></textarea>
-          <button class="tweak-send" id="tweak-send-btn" onclick="sendTweak()">➤</button>
+        <div class="chatlog" id="chatlog"></div>
+        <div class="tinrow">
+          <textarea class="tin" id="tin" rows="1" placeholder="Type any instruction…" oninput="ar(this)" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendTweak()}"></textarea>
+          <button class="tsend" id="tsend" onclick="sendTweak()">➤</button>
         </div>
       </div>
-      <div class="reset-link" onclick="resetApp()">← Start over with a new job post</div>
+      <div class="rlink" onclick="resetApp()">← Start over</div>
     </div>
   </div>
-  <div class="bottom-bar" id="bottom-bar">
-    <button class="btn-main" id="gen-btn" onclick="generate()" disabled>✨ Generate Tailored Email</button>
+
+  <div class="bbar" id="bbar">
+    <button class="bmain" id="genbtn" onclick="generate()" disabled>✨ Generate Tailored Email</button>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <!-- ══════════════ SETTINGS PANEL ══════════════ -->
+  <div class="panel" id="settings-panel">
+    <div class="panel-head">
+      <div class="panel-title">⚙️ Settings</div>
+      <div class="panel-close" onclick="closeSettings()">✕</div>
+    </div>
+    <div class="panel-scroll">
+
+      <!-- Provider -->
+      <div class="scard">
+        <div class="scard-hd">🤖 AI Provider</div>
+        <div class="scard-sub">All have free tiers. Keys are stored separately per provider.</div>
+        <div class="ptabs" id="ptabs"></div>
+      </div>
+
+      <!-- Auto-rotate -->
+      <div class="autorot">
+        🔄 <div><strong>Auto-rotation on</strong> <span>— when a key hits its limit, the next activates automatically.</span></div>
+      </div>
+
+      <!-- Key Pool -->
+      <div class="scard">
+        <div class="pool-header">
+          <div class="pool-title">🔑 API Key Pool</div>
+          <div class="pool-count" id="pool-count">0 keys</div>
+        </div>
+        <div class="scard-sub" style="margin-bottom:10px">
+          Add multiple keys — they rotate when one is exhausted.
+          <a href="#" onclick="openKeyLink(event)">Get a free key →</a>
+        </div>
+        <div class="add-key-row">
+          <input class="new-key-input" type="password" id="new-key-input" placeholder="Paste API key here…"/>
+          <button class="eye-btn" onclick="toggleEye()" id="eye-btn">👁</button>
+          <button class="add-btn" onclick="addKey()">+ Add</button>
+        </div>
+        <div class="key-list" id="key-list">
+          <div class="empty-pool" id="empty-pool">No keys yet.<br/>Add your first key above ↑</div>
+        </div>
+      </div>
+
+      <!-- How to -->
+      <div class="scard">
+        <div class="scard-hd" id="how-title">📖 How to get a free key</div>
+        <div class="how-steps" id="how-steps"></div>
+      </div>
+
+      <div class="divider"></div>
+      <div class="privacy">🔒 Keys are stored only in your browser's localStorage — never uploaded, logged, or shared anywhere.</div>
+    </div>
   </div>
 </div>
+
 <script>
+// ═══════════════════════════════════
+//  PWA
+// ═══════════════════════════════════
 let deferredPrompt=null;
-window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;document.getElementById('install-banner').classList.add('show')});
-document.getElementById('install-btn').addEventListener('click',async()=>{if(!deferredPrompt)return;deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;document.getElementById('install-banner').classList.remove('show')});
-window.addEventListener('appinstalled',()=>document.getElementById('install-banner').classList.remove('show'));
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;document.getElementById('ibanner').classList.add('show')});
+document.getElementById('ibtn').addEventListener('click',async()=>{if(!deferredPrompt)return;deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;document.getElementById('ibanner').classList.remove('show')});
+window.addEventListener('appinstalled',()=>document.getElementById('ibanner').classList.remove('show'));
 if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js'));
 
-let emailData=null,tweakHistory=[];
-const profileTA=document.getElementById('profile'),jobTA=document.getElementById('jobpost'),genBtn=document.getElementById('gen-btn');
+// ═══════════════════════════════════
+//  Providers config
+// ═══════════════════════════════════
+const PROVIDERS=[
+  {id:'gemini', name:'Gemini',  sub:'Google · Free ✓',    color:'#4285f4'},
+  {id:'claude', name:'Claude',  sub:'Anthropic · $5 free', color:'#7c6aff'},
+  {id:'openai', name:'OpenAI',  sub:'GPT-4o · $5 free',   color:'#10a37f'},
+  {id:'groq',   name:'Groq',    sub:'Fast · Free ✓',       color:'#f55036'},
+];
+const FREE_LIMITS={gemini:1500,claude:500,openai:200,groq:1000};
+const KEY_LINKS={
+  gemini:'https://aistudio.google.com/app/apikey',
+  claude:'https://console.anthropic.com',
+  openai:'https://platform.openai.com/api-keys',
+  groq:'https://console.groq.com/keys',
+};
+const HOW_TO={
+  gemini:[
+    {t:'Go to',b:'aistudio.google.com',url:'https://aistudio.google.com/app/apikey'},
+    {t:'Sign in with your',b:'Google account'},
+    {t:'Click',b:'"Create API Key"'},
+    {t:'Copy &amp; paste it in the pool above'},
+    {t:'',b:'100% free — no credit card'},
+    {t:'Repeat with another Google account to',b:'add more keys'},
+  ],
+  claude:[
+    {t:'Go to',b:'console.anthropic.com',url:'https://console.anthropic.com'},
+    {t:'Sign up for a free account'},
+    {t:'Go to',b:'API Keys → Create Key'},
+    {t:'Copy &amp; paste it above'},
+    {t:'',b:'$5 free credits on signup'},
+  ],
+  openai:[
+    {t:'Go to',b:'platform.openai.com',url:'https://platform.openai.com/api-keys'},
+    {t:'Sign up for a free account'},
+    {t:'Go to',b:'API Keys → Create new secret key'},
+    {t:'Copy &amp; paste it above'},
+    {t:'',b:'$5 free credits on signup'},
+  ],
+  groq:[
+    {t:'Go to',b:'console.groq.com',url:'https://console.groq.com/keys'},
+    {t:'Sign up free — no credit card needed'},
+    {t:'Click',b:'API Keys → Create API Key'},
+    {t:'Copy &amp; paste it above'},
+    {t:'',b:'Generous free tier — very fast'},
+  ],
+};
 
+// ═══════════════════════════════════
+//  State
+// ═══════════════════════════════════
+let provider='gemini';
+let emailData=null, tweakHistory=[], showingEye=false;
+const profileTA=document.getElementById('profile');
+const jobTA=document.getElementById('jobpost');
+const genbtn=document.getElementById('genbtn');
+
+// ═══════════════════════════════════
+//  Pool storage helpers
+// ═══════════════════════════════════
+const POOL_KEY=p=>`jm_pool_${p}`;
+const ACTIVE_KEY=p=>`jm_active_${p}`;
+function loadPool(){try{return JSON.parse(localStorage.getItem(POOL_KEY(provider)))||[]}catch{return[]}}
+function savePool(pool){try{localStorage.setItem(POOL_KEY(provider),JSON.stringify(pool))}catch{}}
+function getActiveIdx(){try{return parseInt(localStorage.getItem(ACTIVE_KEY(provider)))||0}catch{return 0}}
+function setActiveIdx(i){try{localStorage.setItem(ACTIVE_KEY(provider),i)}catch{}}
+function today(){return new Date().toISOString().slice(0,10)}
+
+function getActiveKey(){
+  const pool=loadPool();if(!pool.length)return null;
+  let idx=getActiveIdx();if(idx>=pool.length)idx=0;
+  const limit=FREE_LIMITS[provider]||500,td=today();
+  for(let i=0;i<pool.length;i++){
+    const k=pool[idx];
+    if(k.exhaustedDay!==td&&(k.uses||0)<limit){setActiveIdx(idx);return{key:k.key,idx,id:k.id}}
+    idx=(idx+1)%pool.length;
+  }
+  return null;
+}
+function trackUsage(idx,tokens){
+  const pool=loadPool();if(!pool[idx])return;
+  const td=today();
+  if(pool[idx].lastDay!==td){pool[idx].uses=0;pool[idx].tokens=0;pool[idx].lastDay=td}
+  pool[idx].uses=(pool[idx].uses||0)+1;
+  pool[idx].tokens=(pool[idx].tokens||0)+(tokens||500);
+  if(pool[idx].uses>=(FREE_LIMITS[provider]||500))pool[idx].exhaustedDay=td;
+  savePool(pool);
+}
+function markExhausted(idx){
+  const pool=loadPool();if(!pool[idx])return;
+  pool[idx].exhaustedDay=today();savePool(pool);
+}
+
+// ═══════════════════════════════════
+//  Nav pill
+// ═══════════════════════════════════
+function updateNavPill(){
+  const pool=loadPool();
+  const dot=document.getElementById('ndot'),lbl=document.getElementById('nlabel');
+  document.getElementById('nokey').style.display=pool.length?'none':'flex';
+  if(!pool.length){dot.className='ndot err';lbl.textContent='Add Key';return false}
+  const active=getActiveKey();
+  if(!active){dot.className='ndot err';lbl.textContent='All Out';return false}
+  const td=today(),k=pool[active.idx];
+  const limit=FREE_LIMITS[provider]||500;
+  const uses=k.lastDay===td?(k.uses||0):0;
+  const rem=Math.max(limit-uses,0),pct=(uses/limit)*100;
+  if(pct<60)dot.className='ndot ok';
+  else if(pct<88)dot.className='ndot warn';
+  else dot.className='ndot warn';
+  lbl.textContent=pool.length>1?`K${active.idx+1}/${pool.length} · ${rem} left`:`${rem} left`;
+  return true;
+}
+
+// ═══════════════════════════════════
+//  Settings panel
+// ═══════════════════════════════════
+function openSettings(){
+  document.getElementById('settings-panel').classList.add('open');
+  renderProviderTabs();renderKeyList();renderHowTo();
+}
+function closeSettings(){
+  document.getElementById('settings-panel').classList.remove('open');
+  updateNavPill();
+}
+function switchProvider(p){
+  provider=p;renderProviderTabs();renderKeyList();renderHowTo();updateNavPill();
+}
+function renderProviderTabs(){
+  document.getElementById('ptabs').innerHTML=PROVIDERS.map(p=>`
+    <div class="ptab${provider===p.id?' active':''}" onclick="switchProvider('${p.id}')">
+      ${p.name}<small>${p.sub}</small>
+    </div>`).join('');
+}
+function toggleEye(){
+  showingEye=!showingEye;
+  document.getElementById('new-key-input').type=showingEye?'text':'password';
+  document.getElementById('eye-btn').textContent=showingEye?'🙈':'👁';
+}
+function addKey(){
+  const inp=document.getElementById('new-key-input'),raw=inp.value.trim();
+  if(!raw||raw.length<10){showToast('⚠️ Key too short');return}
+  const pool=loadPool();
+  if(pool.some(k=>k.key===raw)){showToast('Already added');inp.value='';return}
+  pool.push({id:Date.now(),key:raw,uses:0,tokens:0,lastDay:'',exhaustedDay:''});
+  savePool(pool);inp.value='';showingEye=false;
+  document.getElementById('new-key-input').type='password';
+  document.getElementById('eye-btn').textContent='👁';
+  renderKeyList();updateNavPill();showToast('✓ Key added!');
+  if(navigator.vibrate)navigator.vibrate([25,15,25]);
+}
+function deleteKey(id){
+  let pool=loadPool().filter(k=>k.id!==id);
+  savePool(pool);
+  const ai=getActiveIdx();if(ai>=pool.length)setActiveIdx(0);
+  renderKeyList();updateNavPill();showToast('Key removed');
+}
+function useKey(id){
+  const pool=loadPool(),idx=pool.findIndex(k=>k.id===id);
+  if(idx!==-1){setActiveIdx(idx);renderKeyList();updateNavPill();showToast(`✓ Switched to Key ${idx+1}`)}
+}
+function renderKeyList(){
+  const pool=loadPool();
+  const list=document.getElementById('key-list'),empty=document.getElementById('empty-pool');
+  document.getElementById('pool-count').textContent=pool.length+' key'+(pool.length!==1?'s':'');
+  if(!pool.length){list.innerHTML='';empty.style.display='block';return}
+  empty.style.display='none';
+  const ai=getActiveIdx(),td=today(),limit=FREE_LIMITS[provider]||500;
+  list.innerHTML=pool.map((k,i)=>{
+    const uses=k.lastDay===td?(k.uses||0):0;
+    const tokens=k.lastDay===td?(k.tokens||0):0;
+    const pct=Math.min((uses/limit)*100,100);
+    const rem=Math.max(limit-uses,0);
+    const isEx=k.exhaustedDay===td&&uses>=limit;
+    const isAct=i===ai&&!isEx;
+    const barcol=pct<60?'var(--green)':pct<88?'var(--amber)':'var(--red)';
+    const preview=k.key.length>30?k.key.slice(0,12)+'…'+k.key.slice(-8):k.key;
+    const itemCls='key-item'+(isAct?' active-key':isEx?' exhausted':'');
+    const badgeCls='key-badge '+(isEx?'is-out':isAct?'is-active':'is-idle');
+    const badgeTxt=isEx?'OUT':isAct?'ON':(i+1);
+    const statusTxt=isEx?'Exhausted — resets midnight':isAct?`Active · ${rem} left`:`Idle · ${rem} left`;
+    return`<div class="${itemCls}">
+      <div class="${badgeCls}">${badgeTxt}</div>
+      <div class="key-info">
+        <div class="key-preview">${preview}</div>
+        <div class="key-status-text">${statusTxt}</div>
+        <div class="key-bar-wrap"><div class="key-bar" style="width:${pct}%;background:${barcol}"></div></div>
+        <div class="key-uses">${uses}/${limit} req · ~${tokens.toLocaleString()} tokens today</div>
+      </div>
+      <div class="key-actions">
+        ${!isAct&&!isEx?`<button class="key-use-btn" onclick="useKey(${k.id})">Use</button>`:''}
+        <button class="key-del" onclick="deleteKey(${k.id})">✕</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+function openKeyLink(e){
+  e.preventDefault();window.open(KEY_LINKS[provider],'_blank');
+}
+function renderHowTo(){
+  const steps=HOW_TO[provider];
+  document.getElementById('how-title').textContent=`📖 Get a free ${PROVIDERS.find(p=>p.id===provider).name} key`;
+  document.getElementById('how-steps').innerHTML=steps.map((s,i)=>`
+    <div class="how-step">
+      <div class="how-num">${i+1}</div>
+      <div class="how-text">${s.t} ${s.b?(s.url?`<a href="${s.url}" target="_blank"><strong>${s.b}</strong></a>`:`<strong>${s.b}</strong>`):''}
+      </div>
+    </div>`).join('');
+}
+document.getElementById('new-key-input').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();addKey()}});
+
+// ═══════════════════════════════════
+//  Toast
+// ═══════════════════════════════════
+let toastTimer=null;
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),2400);
+}
+
+// ═══════════════════════════════════
+//  Input / steps
+// ═══════════════════════════════════
 function updateCounts(){
   document.getElementById('pc').textContent=profileTA.value.length;
   document.getElementById('jc').textContent=jobTA.value.length;
-  genBtn.disabled=!profileTA.value.trim()||!jobTA.value.trim();
+  genbtn.disabled=!profileTA.value.trim()||!jobTA.value.trim();
 }
 profileTA.addEventListener('input',updateCounts);
 jobTA.addEventListener('input',updateCounts);
-
 function setStep(n){
-  ['s1','s2','s3'].forEach((id,i)=>{const el=document.getElementById(id);el.className='step-dot';if(i+1<n)el.classList.add('done');else if(i+1===n)el.classList.add('active')});
-  document.getElementById('line1').style.width=n>1?'100%':'0%';
-  document.getElementById('line2').style.width=n>2?'100%':'0%';
+  ['s1','s2','s3'].forEach((id,i)=>{const el=document.getElementById(id);el.className='step';if(i+1<n)el.classList.add('done');else if(i+1===n)el.classList.add('active')});
+  document.getElementById('l1').style.width=n>1?'100%':'0%';
+  document.getElementById('l2').style.width=n>2?'100%':'0%';
 }
 
-const examples={
-  profile:`Name: Alex Rivera\nTitle: Full-Stack Developer\nSkills: React, Node.js, TypeScript, Python, AWS, PostgreSQL, Docker\nExperience: 5 years building scalable web apps\nEducation: B.S. Computer Science\nEmail: alex.rivera@email.com\nLinkedIn: linkedin.com/in/alexrivera\nGitHub: github.com/alexrivera`,
-  job:`Senior Software Engineer – Acme Corp\n📍 Remote | 💰 $130K–$170K | Full-time\n\nWe're building the next generation of developer tools.\n\nRequirements:\n• 4+ years full-stack experience\n• Strong React and Node.js skills\n• TypeScript proficiency\n• Cloud experience (AWS preferred)\n• PostgreSQL experience\n\nContact: talent@acmecorp.com`
+// ═══════════════════════════════════
+//  Examples
+// ═══════════════════════════════════
+const EX={
+  profile:`Name: Alex Rivera\nTitle: Full-Stack Developer\nSkills: React, Node.js, TypeScript, Python, AWS, PostgreSQL, Docker\nExperience: 5 years building scalable web apps\nEducation: B.S. Computer Science\nEmail: alex.rivera@email.com\nLinkedIn: linkedin.com/in/alexrivera`,
+  job:`Senior Software Engineer – Acme Corp\n📍 Remote | 💰 $130K–$170K | Full-time\n\nRequirements:\n• 4+ years full-stack\n• React, Node.js, TypeScript\n• AWS experience\n• PostgreSQL experience\n\nContact: talent@acmecorp.com`
 };
-function loadExample(t){if(t==='profile')profileTA.value=examples.profile;else jobTA.value=examples.job;updateCounts();if(navigator.vibrate)navigator.vibrate(30)}
+function loadEx(t){
+  if(t==='profile')profileTA.value=EX.profile;else jobTA.value=EX.job;
+  updateCounts();if(navigator.vibrate)navigator.vibrate(22);
+}
 
+// ═══════════════════════════════════
+//  AI API call with auto-rotation
+// ═══════════════════════════════════
+async function callAI(messages,systemPrompt,attempt){
+  attempt=attempt||0;
+  if(attempt>6)throw new Error('ALL_EXHAUSTED');
+  const active=getActiveKey();
+  if(!active)throw new Error('NO_KEY');
+  const{key,idx}=active;
+
+  try{
+    if(provider==='gemini'){
+      const contents=[];
+      if(systemPrompt){contents.push({role:'user',parts:[{text:systemPrompt}]},{role:'model',parts:[{text:'Understood.'}]})}
+      messages.forEach(m=>contents.push({role:m.role==='assistant'?'model':'user',parts:[{text:m.content}]}));
+      const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${key}`,{
+        method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({contents,generationConfig:{temperature:0.72,maxOutputTokens:1000}})
+      });
+      const data=await res.json();
+      if(data.error){
+        if(data.error.code===429||/quota|limit/i.test(data.error.message||'')){
+          markExhausted(idx);showToast(`🔄 Key ${idx+1} exhausted — switching…`);
+          return callAI(messages,systemPrompt,attempt+1);
+        }
+        throw new Error(data.error.message||'Gemini error');
+      }
+      trackUsage(idx,(data.usageMetadata?.totalTokenCount)||600);
+      updateNavPill();
+      return data.candidates[0].content.parts[0].text;
+
+    }else if(provider==='claude'){
+      const res=await fetch('https://api.anthropic.com/v1/messages',{
+        method:'POST',
+        headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+        body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:systemPrompt||undefined,messages})
+      });
+      const data=await res.json();
+      if(data.error){
+        if(res.status===429||/quota|limit|credit/i.test(data.error.message||'')){
+          markExhausted(idx);showToast(`🔄 Key ${idx+1} exhausted — switching…`);
+          return callAI(messages,systemPrompt,attempt+1);
+        }
+        throw new Error(data.error.message||'Claude error');
+      }
+      trackUsage(idx,(data.usage?.input_tokens||0)+(data.usage?.output_tokens||0));
+      updateNavPill();
+      return data.content.map(b=>b.text||'').join('');
+
+    }else if(provider==='openai'){
+      const msgs=systemPrompt?[{role:'system',content:systemPrompt},...messages]:messages;
+      const res=await fetch('https://api.openai.com/v1/chat/completions',{
+        method:'POST',
+        headers:{'Content-Type':'application/json','Authorization':`Bearer ${key}`},
+        body:JSON.stringify({model:'gpt-4o-mini',max_tokens:1000,messages:msgs})
+      });
+      const data=await res.json();
+      if(data.error){
+        if(res.status===429||/quota|limit/i.test(data.error.message||'')){
+          markExhausted(idx);showToast(`🔄 Key ${idx+1} exhausted — switching…`);
+          return callAI(messages,systemPrompt,attempt+1);
+        }
+        throw new Error(data.error.message||'OpenAI error');
+      }
+      trackUsage(idx,data.usage?.total_tokens||500);
+      updateNavPill();
+      return data.choices[0].message.content;
+
+    }else if(provider==='groq'){
+      const msgs=systemPrompt?[{role:'system',content:systemPrompt},...messages]:messages;
+      const res=await fetch('https://api.groq.com/openai/v1/chat/completions',{
+        method:'POST',
+        headers:{'Content-Type':'application/json','Authorization':`Bearer ${key}`},
+        body:JSON.stringify({model:'llama-3.3-70b-versatile',max_tokens:1000,messages:msgs})
+      });
+      const data=await res.json();
+      if(data.error){
+        if(res.status===429||/quota|limit/i.test(data.error?.message||'')){
+          markExhausted(idx);showToast(`🔄 Key ${idx+1} exhausted — switching…`);
+          return callAI(messages,systemPrompt,attempt+1);
+        }
+        throw new Error(data.error?.message||'Groq error');
+      }
+      trackUsage(idx,data.usage?.total_tokens||400);
+      updateNavPill();
+      return data.choices[0].message.content;
+    }
+  }catch(e){
+    if(e.message==='ALL_EXHAUSTED'||e.message==='NO_KEY')throw e;
+    throw e;
+  }
+}
+
+// ═══════════════════════════════════
+//  Generate
+// ═══════════════════════════════════
 async function generate(){
+  if(!updateNavPill()){openSettings();return}
   const profile=profileTA.value.trim(),job=jobTA.value.trim();
   if(!profile||!job)return;
-  genBtn.disabled=true;genBtn.innerHTML='<div class="spinner"></div> Crafting your email…';setStep(2);
+  genbtn.disabled=true;genbtn.innerHTML='<div class="spin"></div> Crafting your email…';setStep(2);
+  document.querySelectorAll('.errmsg').forEach(e=>e.remove());
   try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:`You are an expert career coach and email writer.\n\nMY PROFILE:\n${profile}\n\nJOB POSTING:\n${job}\n\n1. Extract the hiring email. If not found use "hiring@company.com".\n2. Write a compelling personalized outreach email under 180 words with a clear CTA.\n\nRespond ONLY in this exact JSON (no markdown):\n{"to":"email","subject":"subject","body":"body with \\n for newlines","matchScore":85,"matchReason":"one sentence"}`}]})});
-    const data=await res.json();
-    const raw=data.content.map(b=>b.text||'').join('').trim().replace(/\`\`\`json|\`\`\`/g,'').trim();
-    emailData=JSON.parse(raw);
-    tweakHistory=[{role:'user',content:`Here is the email you wrote. Keep as-is for now.\n\nSUBJECT: ${emailData.subject}\n\nBODY:\n${emailData.body}`},{role:'assistant',content:`Got it! Use the tweak options below to adjust anything.`}];
+    const prompt=`You are an expert career coach and email writer.\n\nMY PROFILE:\n${profile}\n\nJOB POSTING:\n${job}\n\n1. Extract the hiring email from the posting. If not found use "hiring@company.com".\n2. Write a compelling personalized outreach email under 180 words with a clear CTA.\n\nRespond ONLY in this exact JSON (no markdown):\n{"to":"email","subject":"subject line","body":"body with \\n for newlines","matchScore":85,"matchReason":"one sentence"}`;
+    const raw=await callAI([{role:'user',content:prompt}]);
+    emailData=JSON.parse(raw.trim().replace(/```json|```/g,'').trim());
+    tweakHistory=[
+      {role:'user',content:`Keep this email.\nSUBJECT: ${emailData.subject}\nBODY:\n${emailData.body}`},
+      {role:'assistant',content:'Got it! Use tweaks to refine.'}
+    ];
     renderResult(emailData);
-    if(navigator.vibrate)navigator.vibrate([50,30,50]);
+    if(navigator.vibrate)navigator.vibrate([40,20,40]);
   }catch(err){
-    document.getElementById('view-input').innerHTML+=`<div class="error-msg">⚠️ Something went wrong. Check your connection and try again.</div>`;
-    genBtn.disabled=false;genBtn.innerHTML='✨ Generate Tailored Email';setStep(1);
+    let msg='⚠️ Something went wrong. Please try again.';
+    if(err.message==='NO_KEY'||err.message==='ALL_EXHAUSTED')msg='🔑 All keys exhausted. Add more in Settings or wait until midnight.';
+    else if(/invalid|400/i.test(err.message))msg='🔑 Invalid key. Check Settings.';
+    else if(/network|fetch/i.test(err.message))msg='📶 Network error. Check connection and retry.';
+    document.getElementById('v-input').innerHTML+=`<div class="errmsg">${msg}</div>`;
+    genbtn.disabled=false;genbtn.innerHTML='✨ Generate Tailored Email';setStep(1);
   }
 }
 
+// ═══════════════════════════════════
+//  Render result
+// ═══════════════════════════════════
 function renderResult(d){
-  const score=d.matchScore||75,circ=125.6,offset=circ-(score/100)*circ;
-  const arc=document.getElementById('score-arc');
-  arc.style.strokeDashoffset=offset;arc.style.stroke=score>=80?'#43e97b':score>=60?'#f59e0b':'#ff6584';
-  document.getElementById('score-num').textContent=score+'%';
-  document.getElementById('match-reason').textContent=d.matchReason||'';
-  document.getElementById('to-val').textContent=d.to;
-  document.getElementById('subj-val').textContent=d.subject;
-  document.getElementById('body-val').textContent=d.body;
-  document.getElementById('view-input').style.display='none';
-  document.getElementById('view-result').style.display='block';
-  document.getElementById('bottom-bar').style.display='none';
-  document.getElementById('content').scrollTop=0;setStep(3);
+  const score=d.matchScore||75,circ=138.2,offset=circ-(score/100)*circ;
+  const arc=document.getElementById('sarc');
+  arc.style.strokeDashoffset=offset;
+  arc.style.stroke=score>=80?'#00e5a0':score>=60?'#ffb347':'#ff6b9d';
+  document.getElementById('snum').textContent=score+'%';
+  document.getElementById('mreason').textContent=d.matchReason||'';
+  document.getElementById('fto').textContent=d.to;
+  document.getElementById('fsubj').textContent=d.subject;
+  document.getElementById('fbody').textContent=d.body;
+  document.getElementById('v-input').style.display='none';
+  document.getElementById('v-result').style.display='block';
+  document.getElementById('bbar').style.display='none';
+  document.getElementById('scroll').scrollTop=0;
+  setStep(3);
 }
 
-function autoResize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,100)+'px'}
-function sendChip(chip){document.getElementById('tweak-input').value=chip.textContent;sendTweak()}
-
+// ═══════════════════════════════════
+//  Tweaks
+// ═══════════════════════════════════
+function ar(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,100)+'px'}
+function sendChip(c){document.getElementById('tin').value=c.textContent;sendTweak()}
 async function sendTweak(){
-  const input=document.getElementById('tweak-input'),sendBtn=document.getElementById('tweak-send-btn');
-  const instruction=input.value.trim();
-  if(!instruction||!emailData)return;
-  input.value='';input.style.height='auto';sendBtn.disabled=true;
-  if(navigator.vibrate)navigator.vibrate(20);
-  addChatMsg(instruction,'user');
-  const thinkEl=addChatMsg('Rewriting…','ai thinking');
-  const sysContext=`You are an AI email editor. Rewrite ONLY the subject and body of this job application email per the user's instruction. Keep it professional and human.\n\nCurrent email:\nSUBJECT: ${emailData.subject}\nBODY:\n${emailData.body}\n\nRespond ONLY in this JSON (no markdown):\n{"subject":"updated subject","body":"updated body with \\n for newlines","change":"one sentence what changed"}`;
-  const messages=[...tweakHistory,{role:'user',content:instruction}];
+  const tin=document.getElementById('tin'),tsend=document.getElementById('tsend');
+  const inst=tin.value.trim();if(!inst||!emailData)return;
+  tin.value='';tin.style.height='auto';tsend.disabled=true;
+  if(navigator.vibrate)navigator.vibrate(16);
+  addMsg(inst,'u');
+  const thinking=addMsg('Rewriting…','a thinking');
+  const sys=`You are an AI email editor. Rewrite per the user's instruction.\n\nCurrent:\nSUBJECT: ${emailData.subject}\nBODY:\n${emailData.body}\n\nRespond ONLY in JSON:\n{"subject":"s","body":"b with \\n","change":"one sentence"}`;
   try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:800,system:sysContext,messages})});
-    const data=await res.json();
-    const raw=data.content.map(b=>b.text||'').join('').trim().replace(/\`\`\`json|\`\`\`/g,'').trim();
-    const result=JSON.parse(raw);
-    emailData.subject=result.subject;emailData.body=result.body;
-    updateField('subj-val',result.subject);updateField('body-val',result.body);
-    thinkEl.classList.remove('thinking');thinkEl.textContent='✓ '+(result.change||'Done!');
-    tweakHistory.push({role:'user',content:instruction},{role:'assistant',content:result.change||'Updated.'});
-    document.getElementById('chat-log').lastChild.scrollIntoView({behavior:'smooth',block:'nearest'});
-  }catch(err){
-    thinkEl.classList.remove('thinking');thinkEl.textContent='⚠️ Failed. Try again.';thinkEl.style.color='#ff9ab0';
+    const raw=await callAI([...tweakHistory,{role:'user',content:inst}],sys);
+    const r=JSON.parse(raw.trim().replace(/```json|```/g,'').trim());
+    emailData.subject=r.subject;emailData.body=r.body;
+    updField('fsubj',r.subject);updField('fbody',r.body);
+    thinking.classList.remove('thinking');thinking.classList.add('ok');
+    thinking.textContent='✓ '+(r.change||'Done!');
+    tweakHistory.push({role:'user',content:inst},{role:'assistant',content:r.change||'Updated.'});
+    if(tweakHistory.length>12)tweakHistory=tweakHistory.slice(-10);
+  }catch{
+    thinking.classList.remove('thinking');
+    thinking.textContent='⚠️ Failed. Try again.';thinking.style.color='#ffa0bc';
   }
-  sendBtn.disabled=false;
+  tsend.disabled=false;
 }
-
-function addChatMsg(text,type){
-  const log=document.getElementById('chat-log'),el=document.createElement('div');
-  el.className='chat-msg '+type;el.textContent=text;log.appendChild(el);
+function addMsg(text,type){
+  const log=document.getElementById('chatlog'),el=document.createElement('div');
+  el.className='cmsg '+type;el.textContent=text;log.appendChild(el);
   el.scrollIntoView({behavior:'smooth',block:'nearest'});return el;
 }
-
-function updateField(id,text){
+function updField(id,text){
   const el=document.getElementById(id);el.textContent=text;
   el.classList.remove('flash');void el.offsetWidth;el.classList.add('flash');
 }
 
-function copyField(id,btn){
+// ═══════════════════════════════════
+//  Copy / Mail
+// ═══════════════════════════════════
+function cpf(id,btn){
   navigator.clipboard.writeText(document.getElementById(id).textContent).then(()=>{
-    btn.textContent='✓ Copied!';btn.classList.add('copied');
-    setTimeout(()=>{btn.textContent='Copy';btn.classList.remove('copied')},2000);
+    btn.textContent='✓';btn.classList.add('ok');
+    setTimeout(()=>{btn.textContent='Copy';btn.classList.remove('ok')},2200);
   });
-  if(navigator.vibrate)navigator.vibrate(22);
+  if(navigator.vibrate)navigator.vibrate(18);
 }
-
-function copyAll(e){
+function cpAll(e){
   if(!emailData)return;
   navigator.clipboard.writeText(`To: ${emailData.to}\nSubject: ${emailData.subject}\n\n${emailData.body}`).then(()=>{
-    const btn=e.target;btn.textContent='✓ Copied!';setTimeout(()=>btn.textContent='📋 Copy All',2000);
+    e.target.textContent='✓ Copied!';setTimeout(()=>e.target.textContent='📋 Copy All',2200);
   });
-  if(navigator.vibrate)navigator.vibrate(22);
+  if(navigator.vibrate)navigator.vibrate(18);
 }
-
-function openMail(){if(!emailData)return;window.open(`mailto:${emailData.to}?subject=${encodeURIComponent(emailData.subject)}&body=${encodeURIComponent(emailData.body)}`,'_blank')}
-
+function openMail(){
+  if(!emailData)return;
+  window.open(`mailto:${emailData.to}?subject=${encodeURIComponent(emailData.subject)}&body=${encodeURIComponent(emailData.body)}`,'_blank');
+}
 function resetApp(){
   emailData=null;tweakHistory=[];
   profileTA.value='';jobTA.value='';updateCounts();
-  document.getElementById('chat-log').innerHTML='';
-  document.getElementById('view-result').style.display='none';
-  document.getElementById('view-input').style.display='block';
-  document.getElementById('bottom-bar').style.display='block';
-  genBtn.innerHTML='✨ Generate Tailored Email';setStep(1);
-  document.getElementById('content').scrollTop=0;
-  document.querySelectorAll('.error-msg').forEach(e=>e.remove());
+  document.getElementById('chatlog').innerHTML='';
+  document.getElementById('v-result').style.display='none';
+  document.getElementById('v-input').style.display='block';
+  document.getElementById('bbar').style.display='block';
+  genbtn.innerHTML='✨ Generate Tailored Email';
+  setStep(1);document.getElementById('scroll').scrollTop=0;
+  document.querySelectorAll('.errmsg').forEach(e=>e.remove());
+  updateNavPill();
 }
+
+// ═══════════════════════════════════
+//  Init
+// ═══════════════════════════════════
+updateNavPill();
+renderProviderTabs();
+renderHowTo();
 </script>
 </body>
 </html>
